@@ -1,21 +1,21 @@
 # CLAUDE.md — ActuSpec Final Architecture
-## START Hack 2026 · Belimo Smart Actuators  
+## START Hack 2026 · Belimo Smart Actuators
 **Repo final architecture**
 
 ---
 
 ## 1. Project identity
 
-**Product name:** ActuSpec  
+**Product name:** ActuSpec
 **Tagline:** *We gave actuators an ECG.*
 
-**One-line description:**  
+**One-line description:**
 ActuSpec is a live actuator commissioning and diagnostics tool that turns torque, position, temperature, and related telemetry into a mechanical fingerprint, a health score, and a commissioning verdict.
 
-**Primary user:**  
+**Primary user:**
 Installer / system integrator
 
-**Primary workflow:**  
+**Primary workflow:**
 Run a controlled actuator stroke → capture telemetry → compare against healthy baseline → generate diagnosis
 
 ---
@@ -23,21 +23,19 @@ Run a controlled actuator stroke → capture telemetry → compare against healt
 ## 2. Architecture decision
 
 ### Final architecture choice
-**Lean modular Streamlit monolith**
+**React + FastAPI with modular Python backend**
 
-This is the final architecture because it gives the best balance of:
-- speed of implementation
-- demo reliability
-- debugging simplicity
-- technical credibility
-- fallback safety
+The frontend is a React SPA (Vite + Tailwind + Recharts) that communicates with a FastAPI backend (`api.py`). The backend exposes all analysis, orchestration, and InfluxDB logic as REST endpoints. A legacy Streamlit UI (`solution.py`) exists but is **not the primary UI**.
 
 ### What it is
-A single Python app launched with Streamlit, backed by a few small internal modules.
+- React frontend served by Vite dev server (port 3000)
+- FastAPI backend (port 8000) exposing REST API
+- Vite proxies `/api` requests to FastAPI
+- Modular Python backend: orchestrator, commander, collector, analyzer, baseline, fallback
+- Prerecorded replay traces for offline demo
 
 ### What it is not
 - not microservices
-- not a React + FastAPI split
 - not event-driven infrastructure
 - not heavy ML
 - not production-grade backend complexity
@@ -73,32 +71,32 @@ The actual live path is:
 4. The Raspberry Pi logger writes actuator telemetry into measurement `measurements`
 5. ActuSpec reads telemetry from `measurements` and analyzes it
 
-The Raspberry Pi logger is the real hardware bridge.  
+The Raspberry Pi logger is the real hardware bridge.
 ActuSpec is a diagnostics and interaction layer on top of that pipeline.
 
 ---
 
 ## 4. Core architectural principles
 
-1. **Replay mode is first-class, not backup polish**  
+1. **Replay mode is first-class, not backup polish**
    The app must work even if live hardware interaction fails.
 
-2. **One process, few modules, clear boundaries**  
-   Keep runtime simple, but avoid a single giant file.
+2. **Separation of frontend and backend**
+   React handles UI/UX; FastAPI handles data, analysis, and InfluxDB interaction.
 
-3. **Analysis must be deterministic and explainable**  
+3. **Analysis must be deterministic and explainable**
    Rule-based logic beats fragile sophistication.
 
-4. **UI must show one clear story**  
+4. **UI must show one clear story**
    Healthy baseline vs current run, plus a clear verdict.
 
-5. **Live mode is an upgrade, not a dependency**  
+5. **Live mode is an upgrade, not a dependency**
    The demo should still survive if command writing or telemetry timing becomes unreliable.
 
-6. **InfluxDB is the only required live interface**  
+6. **InfluxDB is the only required live interface**
    The architecture assumes no direct SSH, serial, or MP-Bus control from the laptop.
 
-7. **Useful traces must be preserved locally**  
+7. **Useful traces must be preserved locally**
    Pi-side data is not persistent across reboots, so baselines and replay traces must be saved on the laptop.
 
 ---
@@ -110,81 +108,110 @@ Belimo_hack/
 ├── CLAUDE.md
 ├── README.md
 ├── requirements.txt
-├── solution.py          # Streamlit app entrypoint
-├── orchestrator.py      # run-state coordination
-├── commander.py         # InfluxDB _process command writer
-├── collector.py         # InfluxDB measurements trace retrieval
-├── analyzer.py          # metrics, scoring, rules, diagnosis
-├── baseline.py          # healthy baseline loading/comparison
-├── fallback.py          # prerecorded trace loading + local persistence
-├── charts.py            # plotting helpers
-├── config.py            # field names, thresholds, constants
-└── data/
-    ├── baseline_healthy.json
-    ├── replay_healthy.json
-    ├── replay_fault.json
-    └── replay_commissioning.json
+├── api.py               # FastAPI backend — REST endpoints for frontend
+├── solution.py           # Legacy Streamlit UI (not primary)
+├── orchestrator.py       # run-state coordination
+├── commander.py          # InfluxDB _process command writer
+├── collector.py          # InfluxDB measurements trace retrieval
+├── analyzer.py           # metrics, scoring, rules, diagnosis
+├── baseline.py           # healthy baseline loading/comparison
+├── fallback.py           # prerecorded trace loading + local persistence
+├── charts.py             # Altair plotting helpers (used by Streamlit)
+├── config.py             # field names, thresholds, constants
+├── data/
+│   ├── baseline_healthy.json
+│   ├── replay_healthy.json
+│   ├── replay_fault.json
+│   └── replay_commissioning.json
+└── frontend/
+    ├── package.json
+    ├── vite.config.ts        # dev server on :3000, proxies /api → :8000
+    ├── tailwind.config.js
+    ├── tsconfig.json
+    └── src/
+        ├── App.tsx           # Main React UI — all tabs and views
+        ├── main.tsx          # React entry point
+        ├── index.css         # Global styles (Tailwind)
+        ├── api/client.ts     # API client — all fetch calls to FastAPI
+        ├── types.ts          # TypeScript type definitions
+        ├── components/ui.tsx # Reusable UI components (Card, Badge, Button)
+        └── lib/utils.ts      # cn() utility
 ```
 
 ---
 
-## 6. Responsibilities of each module
+## 6. How to run
 
-### `solution.py`
-**Role:** UI entrypoint
+### Frontend (primary UI)
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Opens at `http://localhost:3000`.
 
-**Responsibilities:**
-- Streamlit page layout
-- tab navigation
-- mode selection: Live / Replay
-- Run Test buttons
-- session state display
-- rendering charts, scores, badge, explanation
+### Backend (must be running for frontend to work)
+```bash
+python -m pip install -r requirements.txt
+python -m uvicorn api:app --host 0.0.0.0 --port 8000
+```
 
-This file should contain **UI logic only**, not raw InfluxDB queries or scoring formulas.
+### Legacy Streamlit UI (optional, standalone)
+```bash
+python -m streamlit run solution.py
+```
 
 ---
+
+## 7. Responsibilities of each module
+
+### `api.py`
+**Role:** FastAPI REST backend
+
+**Responsibilities:**
+- Expose all orchestration, analysis, and data logic as REST endpoints
+- Serialize pandas DataFrames/Series to JSON
+- CORS enabled for frontend dev server
+- 25+ endpoints covering: state, telemetry, commands, baseline, health, commissioning, fleet, replay, config
+
+### `frontend/src/App.tsx`
+**Role:** Primary React UI
+
+**Responsibilities:**
+- 4-tab navigation: Operations Deck, Baseline Lab, Health Intelligence, Commissioning Gate
+- Live/Replay mode toggle
+- Recharts-based interactive charts
+- Real-time telemetry polling
+- All API calls go through `api/client.ts`
+
+### `frontend/src/api/client.ts`
+**Role:** API client layer
+
+**Responsibilities:**
+- All fetch calls to FastAPI backend
+- Typed request/response handling
+- Uses `/api` prefix (Vite proxies to `:8000`)
 
 ### `orchestrator.py`
 **Role:** central run coordinator
 
 **Responsibilities:**
-- create unique `test_id`
-- maintain run state:
-  - `idle`
-  - `commanding`
-  - `collecting`
-  - `analyzing`
-  - `done`
-  - `error`
+- maintain run state: `idle` → `commanding` → `collecting` → `analyzing` → `done` / `error`
 - prevent multiple simultaneous runs
-- coordinate:
-  - commander
-  - collector
-  - analyzer
-  - fallback
-- return final result payload to UI
-
-This is the most important non-UI module.
-
----
+- coordinate: commander → collector → analyzer → fallback
+- return final result payload
 
 ### `commander.py`
 **Role:** InfluxDB `_process` command writer
 
 **Responsibilities:**
 - write command rows into measurement `_process`
-- send at minimum:
-  - `setpoint_position_%`
-  - `test_number`
-- optionally use the documented epoch-timestamp command convention
-- hide low-level write details from UI
+- send `setpoint_position_%` and `test_number`
+- uses epoch-timestamp convention
 
-**Important note:**  
-This module does **not** control the actuator directly.  
+**Important note:**
+This module does **not** control the actuator directly.
 The Raspberry Pi logger reads `_process` and applies commands to the actuator over MP-Bus.
-
----
 
 ### `collector.py`
 **Role:** telemetry acquisition from `measurements`
@@ -193,110 +220,34 @@ The Raspberry Pi logger reads `_process` and applies commands to the actuator ov
 - query InfluxDB measurement `measurements`
 - load recent telemetry window
 - extract the relevant run trace
-- build a clean DataFrame with:
-  - `feedback_position_%`
-  - `setpoint_position_%` if available
-  - `motor_torque_Nmm`
-  - `internal_temperature_deg_C`
-  - `power_W` if available
-  - `rotation_direction` if available
-  - `test_number` if available
-  - timestamps
-
-**Important design rules:**
-- do **not** depend only on a fragile exact start/stop window
-- prefer querying a recent broader window, then extracting the run segment
-- absolute Pi timestamps may be offset; use `test_number`, relative ordering, and signal patterns to isolate runs
-- field names must be verified on site against the actual bucket schema
-
----
+- validate required fields
 
 ### `analyzer.py`
 **Role:** scoring + diagnosis engine
 
 **Responsibilities:**
-- compute baseline comparison
-- compute commissioning checks
-- compute derived metrics:
-  - torque profile
-  - RMS deviation vs healthy baseline
-  - tracking error
-  - torque variability
-  - temperature rise
-  - optional hysteresis / phase-portrait features
-- return:
-  - health score
-  - commissioning badge
-  - metric statuses
-  - diagnosis text
-  - chart-ready data
+- torque profile computation
+- health score (RMS deviation vs baseline)
+- health diagnosis (deterministic text templates)
+- commissioning score (range, CV, tracking, temperature checks)
 
 This module must be deterministic and explainable.
-
----
 
 ### `baseline.py`
 **Role:** healthy reference manager
 
-**Responsibilities:**
-- load healthy baseline trace from local storage
-- generate baseline profile
-- expose baseline reference to analyzer
-- support export/import of certified healthy baseline traces
-
-For MVP:
-- one healthy certified baseline per actuator/demo setup is enough
-
-Do **not** build a general factory baseline management system.
-
----
-
 ### `fallback.py`
 **Role:** replay trace provider and local trace persistence
 
-**Responsibilities:**
-- load prerecorded traces from local JSON/CSV files
-- provide healthy scenario
-- provide degraded scenario
-- provide commissioning scenario
-- save useful live traces locally for later replay
-- preserve baseline traces outside the Pi bucket
-
-Replay mode must reuse the same analysis pipeline as live mode.
-
----
-
 ### `charts.py`
-**Role:** plotting helpers
-
-**Responsibilities:**
-- torque vs position phase portrait
-- healthy vs current overlay
-- health score visuals
-- commissioning badge visuals
-- optional fleet bar chart
-
-Keep charting separate from analysis logic.
-
----
+**Role:** Altair plotting helpers (used by legacy Streamlit UI)
 
 ### `config.py`
 **Role:** central constants and environment mapping
 
-**Responsibilities:**
-- Influx host / bucket / org / token / measurement names
-- expected field names
-- thresholds
-- replay file paths
-- default mode
-- demo constants
-- hotspot / Influx defaults for local setup
-
-This prevents scattered hardcoding and makes on-site adaptation faster.
-
 ---
 
-## 7. Runtime modes
+## 8. Runtime modes
 
 ### Mode A — Live
 Used when:
@@ -304,96 +255,61 @@ Used when:
 - InfluxDB is reachable
 - command writing to `_process` works
 - telemetry arrives correctly in `measurements`
-- time pressure is manageable
 
 **Flow:**
-1. User clicks **Run Live Test**
-2. Orchestrator creates `test_id`
-3. Commander writes command sequence into `_process`
+1. User clicks **Run Live Test** in React UI
+2. React calls FastAPI endpoint
+3. FastAPI → Orchestrator → Commander writes to `_process`
 4. Raspberry Pi logger applies commands to actuator over MP-Bus
-5. Collector pulls recent telemetry from `measurements`
-6. Collector extracts run segment using `test_number`, recent windows, and signal shape
-7. Analyzer compares against baseline
-8. UI shows score, overlay, badge, diagnosis
-
----
+5. Orchestrator → Collector pulls telemetry from `measurements`
+6. Orchestrator → Analyzer compares against baseline
+7. FastAPI returns JSON result
+8. React renders score, overlay, badge, diagnosis
 
 ### Mode B — Replay
 Used when:
 - live command path fails
-- telemetry timing is unreliable
 - demo reliability must be guaranteed
 - the Pi bucket has been reset
-- baseline or live traces need to be replayed consistently
 
 **Flow:**
-1. User selects prerecorded scenario
-2. Fallback loader loads locally saved trace
-3. Analyzer runs unchanged
-4. UI shows same outputs as live mode
+1. User selects prerecorded scenario in React UI
+2. React calls replay endpoint
+3. FastAPI → Fallback loader loads locally saved trace
+4. Analyzer runs unchanged
+5. React renders same outputs as live mode
 
 Replay mode is a **core feature**, not an apology.
 
 ---
 
-## 8. Final UI structure
+## 9. UI structure (React)
 
-### Tab 1 — Live Monitor
-**Purpose:**
-- show current telemetry
-- let user choose Live or Replay
-- start test run
+### Tab 1 — Operations Deck
+- Live/Replay mode toggle
+- Manual actuator control (send setpoints)
+- Live telemetry charts
+- Run state indicator
 
-**Show:**
-- mode selector
-- current signal chart
-- Run Test button
-- current run status
+### Tab 2 — Baseline Lab
+- Certified healthy baseline profile
+- Run/load baseline actions
+- Baseline overlay chart
 
----
+### Tab 3 — Health Intelligence
+- Health score 0–100
+- Baseline vs current overlay
+- Diagnostic explanations
+- Fleet intelligence bar chart
 
-### Tab 2 — Healthy Baseline
-**Purpose:**
-- explain what “normal” means
-- make the ECG analogy concrete
-
-**Show:**
-- baseline torque-vs-position profile
-- optional baseline metadata
-- overlay of baseline vs latest run
+### Tab 4 — Commissioning Gate
+- Pass / marginal / fail badge
+- Check breakdown (range, torque CV, tracking error, temp rise)
+- Recommendations
 
 ---
 
-### Tab 3 — Health Score
-**Purpose:**
-- show the main diagnostic result
-
-**Show:**
-- score 0–100
-- healthy vs current overlay
-- traffic-light statuses
-- short explanation text
-
----
-
-### Tab 4 — Commissioning QA
-**Purpose:**
-- deliver the installer-facing verdict
-
-**Show:**
-- pass / marginal / fail badge
-- check breakdown:
-  - range of motion
-  - torque variability
-  - tracking error
-  - temperature rise
-- recommended next action
-
----
-
-## 9. Data model assumptions
-
-The architecture assumes the repo-documented Influx layout.
+## 10. Data model assumptions
 
 ### InfluxDB connection
 - **Bucket:** `actuator-data`
@@ -401,7 +317,6 @@ The architecture assumes the repo-documented Influx layout.
 - **Command measurement:** `_process`
 
 ### Telemetry fields in `measurements`
-Expected fields include:
 - `feedback_position_%`
 - `setpoint_position_%`
 - `motor_torque_Nmm`
@@ -411,71 +326,42 @@ Expected fields include:
 - `test_number`
 
 ### Command fields in `_process`
-Expected fields include:
 - `setpoint_position_%`
 - `test_number`
 
 ### Timestamp handling
-- command writes may use the repo’s epoch-timestamp convention
-- telemetry timestamps come from the Raspberry Pi logger
-- Pi-side clock may not be calibrated to wall-clock time
-- absolute timestamps should not be trusted blindly
-- relative signal order, recent windows, and `test_number` are preferred for trace extraction
-
-### Important implementation rule
-Field names and bucket contents must be verified **on site early** in the InfluxDB UI.  
-Do not overengineer abstraction for unknown schemas.
+- command writes use epoch-timestamp convention
+- Pi-side clock may not be calibrated; use `test_number` and relative ordering for trace extraction
 
 ---
 
-## 10. Main analysis logic
+## 11. Main analysis logic
 
-### 10.1 Healthy baseline comparison
-- split stroke into bins
-- compute baseline torque profile
-- compute current torque profile
-- compare using RMS deviation or similar simple metric
+### Healthy baseline comparison
+- Bin |torque| by position (20 bins)
+- Compare baseline vs current profile via RMS deviation
+- Score 0–100
 
-**Output:**
-- health score
-- profile overlay
-- deviation heat
+### Commissioning checks
+1. **Range of motion** (min 60%, -30 penalty)
+2. **Torque variability** (CV ≤ 1.5, -25 penalty)
+3. **Tracking error** (≤ 10%, -20 penalty)
+4. **Temperature rise** (≤ 5°C, -15 penalty)
 
----
+Pass ≥ 70, Marginal ≥ 50, Fail < 50
 
-### 10.2 Commissioning checks
-At minimum:
-1. **Range of motion**
-2. **Tracking error**
-3. **Torque variability**
-4. **Temperature rise**
-
-**Output:**
-- pass / marginal / fail
-- short installer recommendation
+### Diagnostic explanations
+Deterministic text templates — no vague AI-style explanations.
 
 ---
 
-### 10.3 Diagnostic explanations
-Use deterministic text templates.
-
-**Examples:**
-- “Localized resistance appears around mid-stroke.”
-- “Torque variability suggests obstruction or misalignment.”
-- “Tracking error suggests coupling or command-response mismatch.”
-- “Thermal rise suggests overload or inefficiency.”
-
-Avoid vague AI-style explanations.
-
----
-
-## 11. Main Mermaid architecture diagram
+## 12. Architecture diagram
 
 ```mermaid
 graph TB
   subgraph NET["Access Layer"]
     LAP["Laptop on BELIMO-X"]
-    INFUX["InfluxDB UI / API\n192.168.3.14:8086"]
+    INFUX["InfluxDB\n192.168.3.14:8086"]
     LAP <--> INFUX
   end
 
@@ -488,19 +374,19 @@ graph TB
     BUS <--> ACT
   end
 
-  subgraph APP["ActuSpec Lean Modular Monolith"]
-    UI["solution.py\nStreamlit UI"]
-    ORCH["orchestrator.py\nRun State Coordinator"]
-    CMD["commander.py\n_process Writer"]
-    COL["collector.py\nmeasurements Collector"]
-    BASE["baseline.py\nHealthy Baseline"]
-    ANA["analyzer.py\nMetrics + Rules + Diagnosis"]
-    FB["fallback.py\nReplay + Local Trace Store"]
-    CH["charts.py\nVisualization Helpers"]
-    CFG["config.py\nSettings / Field Names / Thresholds"]
+  subgraph APP["ActuSpec"]
+    FE["frontend/src/App.tsx\nReact UI :3000"]
+    API["api.py\nFastAPI :8000"]
+    ORCH["orchestrator.py"]
+    CMD["commander.py"]
+    COL["collector.py"]
+    ANA["analyzer.py"]
+    BASE["baseline.py"]
+    FB["fallback.py"]
+    CFG["config.py"]
 
-    UI --> ORCH
-    UI --> CH
+    FE -->|/api proxy| API
+    API --> ORCH
     ORCH --> CMD
     ORCH --> COL
     ORCH --> ANA
@@ -508,7 +394,7 @@ graph TB
     CMD --> INFUX
     COL --> INFUX
     ANA --> BASE
-    UI --> CFG
+    API --> CFG
     ORCH --> CFG
     COL --> CFG
     ANA --> CFG
@@ -517,12 +403,13 @@ graph TB
 
 ---
 
-## 12. Main sequence diagram
+## 13. Sequence diagram
 
 ```mermaid
 sequenceDiagram
     participant U as User
-    participant S as Streamlit UI
+    participant FE as React UI
+    participant API as FastAPI
     participant O as Orchestrator
     participant C as commander.py
     participant I as InfluxDB
@@ -532,8 +419,9 @@ sequenceDiagram
     participant Z as analyzer.py
     participant B as baseline.py
 
-    U->>S: Click "Run Test"
-    S->>O: start_test(mode="live")
+    U->>FE: Click "Run Test"
+    FE->>API: POST /api/health/run-live
+    API->>O: run_live_health_test()
     O->>C: write _process command
     C->>I: setpoint_position_% + test_number
     I->>P: command visible in _process
@@ -547,78 +435,34 @@ sequenceDiagram
     Z->>B: load baseline
     B-->>Z: baseline profile
     Z-->>O: score + badge + diagnostics
-    O-->>S: result payload
-    S-->>U: render score, overlay, QA verdict
+    O-->>API: RunResult
+    API-->>FE: JSON response
+    FE-->>U: render score, overlay, QA verdict
 ```
 
 ---
 
-## 13. What we are intentionally **not** building
+## 14. Tech stack
 
-To stay maximum-optimum for 32 hours, we are **not** building:
-- microservices
-- React frontend
-- WebSockets
-- real-time streaming infrastructure
-- complex ML
-- generalized fleet backend
-- production authentication
-- production persistence layer
-- heavy PDF generation
-- enterprise device registry
-- direct MP-Bus or serial control from the laptop
-- SSH-dependent runtime architecture
+### Backend (Python)
+```txt
+fastapi
+uvicorn
+influxdb-client
+pandas
+numpy
+scipy
+altair
+streamlit    # legacy UI only
+```
 
-These do not increase win probability enough.
-
----
-
-## 14. Build priority order
-
-### P0 — Guaranteed demo first
-Build in this order:
-
-#### Step 1
-`fallback.py` + `baseline.py` + minimal `analyzer.py`
-
-**Goal:**
-- make Replay mode work first
-- preserve baseline and test traces locally from day one
-
-#### Step 2
-Minimal `solution.py`
-- baseline view
-- score view
-- commissioning view
-
-**Goal:**
-- have something demoable even without hardware
-
-#### Step 3
-`collector.py`
-- verify Influx access at `192.168.3.14:8086`
-- inspect bucket / measurement / fields
-- load real traces from `measurements`
-
-#### Step 4
-`commander.py`
-- verify writing to `_process`
-- confirm `setpoint_position_%` and `test_number` flow
-
-#### Step 5
-`orchestrator.py`
-- unify Live and Replay
-- manage run states
-- isolate command / collect / analyze flow
-
-#### Step 6
-Chart polish in `charts.py`
-
-#### Step 7
-Optional extras only if ahead:
-- simple fleet comparison
-- export button
-- better text refinement
+### Frontend
+- React 19 + TypeScript
+- Vite (dev server + bundler)
+- Tailwind CSS
+- Recharts (interactive charts)
+- Lucide React (icons)
+- Motion (Framer Motion animations)
 
 ---
 
@@ -634,120 +478,20 @@ Because the Pi bucket is not persistent across reboots:
 - export at least one degraded/faulted trace locally
 - store replay scenarios in `data/`
 
-### If behind schedule
+---
 
-#### Keep
-- Replay mode
-- baseline comparison
-- health score
-- commissioning badge
-- overlay chart
+## 16. Pitch Narrative
+**One-liner**: "We gave HVAC actuators an ECG."
 
-#### Cut
-- fleet intelligence as a real feature
-- fancy report export
-- extra metrics that are hard to validate
-- advanced UI polish
+**Target users**: Installers (commissioning badge), facility managers (health score alerts), system integrators (fleet intelligence).
 
-If hardware is unreliable:
-- make Replay the official demo path
-- keep one live monitor tab only as a bonus
+**Business model**: SaaS subscription per device — bolt-on to Belimo's existing Cloud/IoT ecosystem.
 
 ---
 
-## 16. Recommended `requirements.txt`
-
-```txt
-streamlit
-influxdb-client
-pandas
-numpy
-scipy
-altair
-```
-
-Optional only if needed:
-```txt
-plotly
-```
-
----
-
-## 17. Repo integration stance
-
-ActuSpec is designed as a separate diagnostics-oriented application.
-
-It may selectively reuse ideas or code patterns from the provided repo, especially:
-- InfluxDB access helpers
-- demo query/write patterns
-- waveform ideas
-- measurement/field naming conventions
-
-But it is **not required** to inherit the repo’s full demo structure.
-
-The preferred approach is:
-- reuse small, useful pieces if they save time
-- keep ActuSpec’s own architecture focused on diagnostics, baseline comparison, scoring, and replay-safe demos
-
----
-
-## 18. Recommended `README.md` skeleton
-
-````md
-# ActuSpec
-
-ActuSpec is a hackathon MVP for the Belimo Smart Actuators case at START Hack 2026.
-
-## What it does
-ActuSpec compares actuator telemetry against a healthy baseline and produces:
-- a health score
-- a commissioning QA verdict
-- a diagnostic explanation
-- visual overlays of actuator behavior
-
-## Network setup
-1. Connect your laptop to `BELIMO-X`
-2. Password: `raspberry`
-3. Open InfluxDB at `http://192.168.3.14:8086`
-4. Login with `pi` / `raspberry`
-
-## Modes
-- Live Mode: writes commands to `_process` and reads telemetry from `measurements`
-- Replay Mode: uses prerecorded traces for reliable demo fallback
-
-## Run
-```bash
-pip install -r requirements.txt
-streamlit run solution.py
-```
-
-## Project structure
-- `solution.py` — Streamlit UI
-- `orchestrator.py` — run coordination
-- `collector.py` — telemetry retrieval from `measurements`
-- `commander.py` — command writing to `_process`
-- `analyzer.py` — metrics and diagnosis
-- `baseline.py` — healthy reference logic
-- `fallback.py` — replay trace loading and local persistence
-- `charts.py` — visuals
-- `config.py` — settings and thresholds
-
-## Core principle
-Replay mode is first-class. Live mode is a bonus, not a dependency.
-````
-
----
-
-## 19. Final architecture verdict
-
-**Final answer:**  
-Build ActuSpec as a **lean modular Streamlit monolith** with:
-- explicit orchestrator
-- explicit Influx `_process` commander
-- explicit `measurements` collector
-- deterministic analyzer
-- healthy baseline comparison
-- local trace persistence
-- Replay mode as a first-class path
-
-That is the architecture with the highest probability of producing a **credible, stable, repo-compatible, judge-friendly MVP in 32 hours**.
+## 17. Important Notes
+- Data does NOT persist across Pi reboots — export data locally if needed
+- Sampling rate is as fast as possible (no fixed period)
+- Do NOT spam commands at very high rates
+- Keep setpoint within 0–100
+- Do NOT stick fingers in valve/damper openings

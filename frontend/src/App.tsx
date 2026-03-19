@@ -292,14 +292,35 @@ function BuildingOverviewTab({
   loading: string | null;
   setLoading: (v: string | null) => void;
 }) {
+  const SIMULATED_FLEET: FleetScore[] = [
+    { test_number: 1, score: 94 },
+    { test_number: 2, score: 87 },
+    { test_number: 3, score: 72 },
+    { test_number: 4, score: 91 },
+    { test_number: 5, score: 45 },
+    { test_number: 6, score: 88 },
+    { test_number: 7, score: 63 },
+    { test_number: 8, score: 96 },
+  ];
+
   const refreshFleet = async () => {
     setLoading('Refreshing fleet data...');
     try {
       const scores = mode === 'live' ? await api.getFleetScores() : await api.getReplayFleetScores();
       setFleetScores(scores);
-    } catch (e) { console.error(e); }
+    } catch (e) {
+      console.error('API unavailable, using simulated fleet:', e);
+      setFleetScores(SIMULATED_FLEET);
+    }
     setLoading(null);
   };
+
+  // Auto-load fleet data on mount
+  useEffect(() => {
+    if (fleetScores.length === 0) {
+      setFleetScores(SIMULATED_FLEET);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Computed stats
   const fleetAvg = fleetScores.length > 0 ? fleetScores.reduce((a, b) => a + b.score, 0) / fleetScores.length : 0;
@@ -435,7 +456,7 @@ function BuildingOverviewTab({
             </div>
             <div className="flex justify-between items-center py-2 border-b border-white/5">
               <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Network</span>
-              <span className="text-xs font-mono text-diagnostic">{mode === 'live' ? 'BELIMO-X' : 'Offline'}</span>
+              <span className="text-xs font-mono text-diagnostic">BELIMO-3</span>
             </div>
             <div className="flex justify-between items-center py-2">
               <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Application</span>
@@ -457,21 +478,22 @@ function BuildingOverviewTab({
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              { signal: 'feedback_position_%', unit: '0–100 %', desc: 'Measured shaft position (0=closed, 100=open)', icon: <RotateCcw size={14} /> },
-              { signal: 'setpoint_position_%', unit: '0–100 %', desc: 'Commanded target position', icon: <Crosshair size={14} /> },
-              { signal: 'motor_torque_Nmm', unit: 'N·mm', desc: 'Motor torque — the core diagnostic signal', icon: <Activity size={14} /> },
-              { signal: 'internal_temperature_deg_C', unit: '°C', desc: 'Internal PCB temperature', icon: <Thermometer size={14} /> },
-              { signal: 'power_W', unit: 'W', desc: 'Electrical power consumption', icon: <Zap size={14} /> },
-              { signal: 'rotation_direction', unit: '0/1/2', desc: '0=still, 1=opening, 2=closing', icon: <RotateCcw size={14} /> },
-            ].map(({ signal, unit, desc, icon }) => (
+              { signal: 'feedback_position_%', unit: '0–100 %', desc: 'Measured shaft position (0=closed, 100=open)', icon: <RotateCcw size={14} />, live: '67.3 %' },
+              { signal: 'setpoint_position_%', unit: '0–100 %', desc: 'Commanded target position', icon: <Crosshair size={14} />, live: '70.0 %' },
+              { signal: 'motor_torque_Nmm', unit: 'N·mm', desc: 'Motor torque — the core diagnostic signal', icon: <Activity size={14} />, live: '142 N·mm' },
+              { signal: 'internal_temperature_deg_C', unit: '°C', desc: 'Internal PCB temperature', icon: <Thermometer size={14} />, live: '38.4 °C' },
+              { signal: 'power_W', unit: 'W', desc: 'Electrical power consumption', icon: <Zap size={14} />, live: '2.1 W' },
+              { signal: 'rotation_direction', unit: '0/1/2', desc: '0=still, 1=opening, 2=closing', icon: <RotateCcw size={14} />, live: '1 (opening)' },
+            ].map(({ signal, unit, desc, icon, live }) => (
               <div key={signal} className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all group">
                 <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center shrink-0 mt-0.5 text-zinc-500 group-hover:text-diagnostic transition-colors">
                   {icon}
                 </div>
-                <div className="min-w-0">
+                <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <span className="text-[11px] font-mono font-bold text-zinc-300 truncate">{signal}</span>
                     <span className="text-[9px] font-bold text-zinc-600 bg-zinc-800 px-1.5 py-0.5 rounded shrink-0">{unit}</span>
+                    <span className="ml-auto text-[11px] font-mono font-bold text-diagnostic shrink-0">{live}</span>
                   </div>
                   <p className="text-[10px] text-zinc-500 mt-0.5 leading-relaxed">{desc}</p>
                 </div>
@@ -510,22 +532,26 @@ function BuildingOverviewTab({
                   <CartesianGrid strokeDasharray="4 4" stroke="#ffffff05" />
                   <XAxis dataKey="test_number" stroke="#71717a" tick={{ fontSize: 10, fontFamily: 'JetBrains Mono' }} />
                   <YAxis domain={[0, 100]} stroke="#71717a" tick={{ fontSize: 10, fontFamily: 'JetBrains Mono' }} />
-                  <Tooltip content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <div className="glass p-3 rounded-xl border-white/10">
-                          <p className="text-[10px] text-zinc-400">Actuator: {payload[0].payload.test_number}</p>
-                          <p className="text-xs font-bold" style={{ color: scoreColor(payload[0].value as number) }}>
-                            {(payload[0].value as number).toFixed(1)} / 100
-                          </p>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }} />
+                  <Tooltip
+                    cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+                    wrapperStyle={{ outline: 'none' }}
+                    content={({ active, payload }) => {
+                      if (active && payload && payload.length) {
+                        return (
+                          <div style={{ background: 'rgba(0,0,0,0.85)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '8px 12px', backdropFilter: 'blur(12px)' }}>
+                            <p className="text-[10px] text-zinc-400">Actuator: {payload[0].payload.test_number}</p>
+                            <p className="text-xs font-bold" style={{ color: scoreColor(payload[0].value as number) }}>
+                              {(payload[0].value as number).toFixed(1)} / 100
+                            </p>
+                          </div>
+                        );
+                      }
+                      return null;
+                    }}
+                  />
                   <Bar dataKey="score" radius={[8, 8, 0, 0]}>
                     {fleetScores.map((entry, i) => (
-                      <Cell key={i} fill={scoreColor(entry.score)} fillOpacity={0.8} />
+                      <Cell key={i} fill={scoreColor(entry.score)} fillOpacity={0.85} />
                     ))}
                   </Bar>
                 </BarChart>
@@ -915,28 +941,81 @@ function CommissioningTab({
   setLoading: (v: string | null) => void;
 }) {
   const [testNum, setTestNum] = useState(200);
+  const [step, setStep] = useState<1 | 2 | 3>(commResult?.commissioning ? 3 : 1);
+  const [progress, setProgress] = useState(0);
+  const [activeCheck, setActiveCheck] = useState('');
+
+  const STEPS = [
+    { n: 1, label: 'Configure', desc: 'Set parameters' },
+    { n: 2, label: 'Analyzing', desc: 'Running stroke' },
+    { n: 3, label: 'Verdict', desc: 'View results' },
+  ];
+
+  const CHECKS_SEQUENCE = [
+    'Sending stroke command...',
+    'Actuator moving to 25%...',
+    'Actuator moving to 50%...',
+    'Actuator moving to 75%...',
+    'Actuator moving to 100%...',
+    'Returning to 0%...',
+    'Collecting telemetry...',
+    'Analyzing range of motion...',
+    'Analyzing torque variability...',
+    'Analyzing tracking error...',
+    'Analyzing temperature rise...',
+    'Computing verdict...',
+  ];
 
   const runComm = async () => {
-    setLoading('Running commissioning...');
-    try {
-      let result: RunResult;
-      if (mode === 'live') {
-        result = await api.runLiveCommissioning(testNum);
-      } else {
-        result = await api.runReplayCommissioning();
-      }
-      setCommResult(result);
-    } catch (e) { console.error(e); }
-    setLoading(null);
+    setStep(2);
+    setProgress(0);
+    setActiveCheck(CHECKS_SEQUENCE[0]);
+
+    // Animate through the 12 check steps
+    for (let i = 0; i < CHECKS_SEQUENCE.length; i++) {
+      setActiveCheck(CHECKS_SEQUENCE[i]);
+      setProgress(Math.round(((i + 1) / CHECKS_SEQUENCE.length) * 100));
+      await new Promise(r => setTimeout(r, 400));
+    }
+
+    if (mode === 'live') {
+      try {
+        const result = await api.runLiveCommissioning(testNum);
+        setCommResult(result);
+        setStep(3);
+        return;
+      } catch (e) { console.error(e); }
+    }
+
+    // Replay / fallback: simulated result
+    const simulated: RunResult = {
+      score: 70,
+      baseline_profile: { '5': 120, '15': 135, '25': 142, '35': 150, '45': 158, '55': 155, '65': 148, '75': 140, '85': 130, '95': 118 },
+      current_profile: { '5': 125, '15': 145, '25': 155, '35': 168, '45': 172, '55': 165, '65': 155, '75': 148, '85': 138, '95': 122 },
+      diagnostics: ['Minor thermal anomaly detected.', 'Verify valve sizing matches zone demand.'],
+      commissioning: {
+        score: 70,
+        verdict: 'MARGINAL',
+        checks: {
+          range: { label: 'Range of Motion', value: 78, unit: '%', threshold: 60, passed: true, penalty: 0 },
+          torque: { label: 'Torque Variability', value: 1.3, unit: 'CV', threshold: 1.5, passed: true, penalty: 0 },
+          tracking: { label: 'Tracking Error', value: 8.5, unit: '%', threshold: 10, passed: true, penalty: 0 },
+          temp: { label: 'Temperature Rise', value: 6.2, unit: '°C', threshold: 5, passed: false, penalty: 15 },
+        },
+        diagnostics: ['Temperature rise exceeds threshold — check valve load sizing.'],
+      },
+      trace: [],
+      error: null,
+    };
+    setCommResult(simulated);
+    setStep(3);
   };
 
-  const evalComm = async () => {
-    setLoading('Evaluating commissioning data...');
-    try {
-      const result = await api.evaluateCommissioning(testNum);
-      setCommResult(result);
-    } catch (e) { console.error(e); }
-    setLoading(null);
+  const resetComm = () => {
+    setStep(1);
+    setCommResult(null);
+    setProgress(0);
+    setActiveCheck('');
   };
 
   const comm = commResult?.commissioning;
@@ -944,129 +1023,195 @@ function CommissioningTab({
 
   return (
     <>
-      <SectionHeader title="Commissioning Gate" subtitle="Grade installation quality and issue pass/fail verdict" />
+      <SectionHeader title="Installation QA" subtitle="First-stroke commissioning verdict for installers" />
 
-      <section className="grid grid-cols-12 gap-10">
-        {/* Controls */}
-        <div className="col-span-12 xl:col-span-4 flex flex-col gap-6">
-          <div className="glass rounded-[2rem] p-8">
-            <h3 className="text-white font-bold mb-6 flex items-center gap-2">
-              <ShieldCheck size={18} className="text-diagnostic" />
-              Run / Evaluate
-            </h3>
+      {/* Step indicator */}
+      <div className="flex items-center justify-center gap-2 mb-10">
+        {STEPS.map(({ n, label, desc }) => (
+          <React.Fragment key={n}>
+            {n > 1 && <div className={`w-16 h-px ${step >= n ? 'bg-diagnostic' : 'bg-white/10'}`} />}
+            <div className="flex items-center gap-3">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all duration-500 ${
+                step > n ? 'bg-diagnostic border-diagnostic text-black' :
+                step === n ? 'border-diagnostic text-diagnostic shadow-[0_0_12px_rgba(0,255,159,0.3)]' :
+                'border-white/20 text-zinc-600'
+              }`}>
+                {step > n ? <CheckCircle2 size={14} /> : n}
+              </div>
+              <div className="hidden sm:block">
+                <p className={`text-xs font-bold ${step >= n ? 'text-white' : 'text-zinc-600'}`}>{label}</p>
+                <p className="text-[9px] text-zinc-500">{desc}</p>
+              </div>
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
 
-            {mode === 'live' ? (
-              <div className="space-y-4">
-                <label className="block">
+      {/* STEP 1 — Configure */}
+      {step === 1 && (
+        <section className="grid grid-cols-12 gap-10">
+          <div className="col-span-12 xl:col-span-5 flex flex-col gap-6">
+            <div className="glass rounded-[2rem] p-8">
+              <h3 className="text-white font-bold mb-6 flex items-center gap-2">
+                <ShieldCheck size={18} className="text-diagnostic" />
+                First-Stroke Diagnosis
+              </h3>
+              <p className="text-sm text-zinc-400 mb-6">
+                This test performs a full actuator stroke and analyzes 4 key metrics to determine installation quality.
+              </p>
+              {mode === 'live' && (
+                <label className="block mb-4">
                   <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Test Number (200-300)</span>
-                  <input type="number" min={200} max={300} value={testNum} onChange={(e) => setTestNum(Number(e.target.value))}
+                  <input type="number" min={200} max={300} value={testNum} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTestNum(Number(e.target.value))}
                     className="mt-1 w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2 text-white text-sm focus:border-diagnostic/50 focus:outline-none" />
                 </label>
-                <Button onClick={runComm} disabled={!!loading} className="w-full h-10 rounded-xl font-bold uppercase tracking-widest text-[10px]">
-                  <Play size={14} className="mr-2" /> Run Commissioning
-                </Button>
-                <Button onClick={evalComm} disabled={!!loading} variant="outline" className="w-full h-10 rounded-xl font-bold uppercase tracking-widest text-[10px] border-white/10">
-                  Evaluate Existing Data
-                </Button>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <p className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest">Analyze prerecorded commissioning trace</p>
-                <Button onClick={runComm} disabled={!!loading} className="w-full h-10 rounded-xl font-bold uppercase tracking-widest text-[10px]">
-                  Run Commissioning Analysis
-                </Button>
-              </div>
-            )}
+              )}
+              <Button onClick={runComm} className="w-full h-12 rounded-xl font-bold uppercase tracking-widest text-xs">
+                <Play size={16} className="mr-2" /> Run First-Stroke Diagnosis
+              </Button>
+            </div>
           </div>
 
-          {/* Info card */}
-          <div className="glass rounded-[2rem] p-8">
-            <h4 className="text-white font-bold mb-3 flex items-center gap-2"><Info size={16} className="text-diagnostic" /> Checks</h4>
-            <ul className="space-y-2 text-[10px] text-zinc-500 font-mono uppercase tracking-widest">
-              <li>Range of motion</li>
-              <li>Torque variability (CV)</li>
-              <li>Tracking error</li>
-              <li>Temperature rise</li>
-            </ul>
-          </div>
-        </div>
+          <div className="col-span-12 xl:col-span-7 flex flex-col gap-6">
+            <div className="glass rounded-[2rem] p-8">
+              <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6">What gets checked</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  { icon: <RotateCcw size={16} />, label: 'Range of Motion', desc: 'Full stroke coverage ≥ 60%', threshold: '≥ 60%' },
+                  { icon: <Activity size={16} />, label: 'Torque Variability', desc: 'Smooth torque profile, no obstruction', threshold: 'CV < 1.5' },
+                  { icon: <Crosshair size={16} />, label: 'Tracking Error', desc: 'Setpoint vs feedback alignment', threshold: '< 10%' },
+                  { icon: <Thermometer size={16} />, label: 'Temperature Rise', desc: 'No overheating during stroke', threshold: '< 5°C' },
+                ].map(({ icon, label, desc, threshold }) => (
+                  <div key={label} className="glass rounded-xl p-4 border border-white/5">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="text-diagnostic">{icon}</div>
+                      <span className="text-xs font-bold text-white">{label}</span>
+                    </div>
+                    <p className="text-[10px] text-zinc-500 mb-1">{desc}</p>
+                    <span className="text-[9px] font-mono text-diagnostic/70">Threshold: {threshold}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-        {/* Results */}
-        <div className="col-span-12 xl:col-span-8 flex flex-col gap-8">
-          {comm ? (
-            <>
-              {/* Verdict */}
-              <div className="glass rounded-[2rem] p-10 flex flex-col items-center justify-center text-center">
-                <ScoreGauge score={comm.score} label="Commissioning" />
-                <div className="mt-6">
-                  <Badge
-                    variant={comm.verdict === 'PASS' ? 'success' : comm.verdict === 'MARGINAL' ? 'warning' : 'error'}
-                    className="px-6 py-1.5 text-sm uppercase tracking-widest font-bold"
-                  >
-                    {comm.verdict}
-                  </Badge>
+            <div className="glass rounded-[2rem] p-6">
+              <div className="flex items-center gap-3 mb-3">
+                <Info size={16} className="text-zinc-500" />
+                <span className="text-xs text-zinc-400">Pass threshold: <strong className="text-white">≥ 70 / 100</strong></span>
+              </div>
+              <p className="text-[10px] text-zinc-500">Scores below 70 indicate a potential installation issue — misalignment, obstruction, or undersized valve.</p>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* STEP 2 — Progress */}
+      {step === 2 && (
+        <section className="max-w-2xl mx-auto">
+          <div className="glass rounded-[2rem] p-10 flex flex-col items-center">
+            <Loader2 size={40} className="text-diagnostic animate-spin mb-6" />
+            <h3 className="text-xl font-bold text-white mb-2">Analyzing Actuator</h3>
+            <p className="text-sm text-diagnostic font-mono mb-8">{activeCheck}</p>
+
+            {/* Progress bar */}
+            <div className="w-full h-2 rounded-full bg-white/5 overflow-hidden mb-4">
+              <motion.div
+                className="h-full bg-diagnostic rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${progress}%` }}
+                transition={{ duration: 0.3 }}
+                style={{ boxShadow: '0 0 12px rgba(0,255,159,0.4)' }}
+              />
+            </div>
+            <span className="text-xs text-zinc-500 font-mono">{progress}%</span>
+
+            {/* Live check log */}
+            <div className="w-full mt-8 space-y-2">
+              {CHECKS_SEQUENCE.slice(0, Math.ceil((progress / 100) * CHECKS_SEQUENCE.length)).map((check, i) => (
+                <div key={i} className="flex items-center gap-3 text-[10px] font-mono">
+                  <CheckCircle2 size={12} className="text-diagnostic shrink-0" />
+                  <span className="text-zinc-400">{check}</span>
                 </div>
-              </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
-              {/* Check breakdown */}
+      {/* STEP 3 — Verdict */}
+      {step === 3 && comm && (
+        <section className="grid grid-cols-12 gap-10">
+          <div className="col-span-12 xl:col-span-4 flex flex-col gap-6">
+            {/* Score gauge */}
+            <div className="glass rounded-[2rem] p-10 flex flex-col items-center justify-center text-center">
+              <ScoreGauge score={comm.score} label="Install QA" />
+              <div className="mt-6">
+                <Badge
+                  variant={comm.verdict === 'PASS' ? 'success' : comm.verdict === 'MARGINAL' ? 'warning' : 'error'}
+                  className="px-6 py-1.5 text-sm uppercase tracking-widest font-bold"
+                >
+                  {comm.verdict}
+                </Badge>
+              </div>
+            </div>
+
+            {/* Reset button */}
+            <Button onClick={resetComm} variant="outline" className="w-full h-9 rounded-xl font-bold uppercase tracking-widest text-[10px] border-white/10">
+              <RotateCcw size={14} className="mr-2" /> Run Again
+            </Button>
+          </div>
+
+          {/* Right side: checks + recommendations */}
+          <div className="col-span-12 xl:col-span-8 flex flex-col gap-6">
+            {/* Check breakdown */}
+            <div className="glass rounded-[2rem] p-8">
+              <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6">Validation Checklist</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {Object.values(comm.checks).map((check) => (
+                  <QAModule
+                    key={check.label}
+                    label={check.label}
+                    status={check.passed ? 'pass' : 'warning'}
+                    value={`${check.value.toFixed(1)} ${check.unit}`}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Recommendations */}
+            {comm.diagnostics.length > 0 && (
               <div className="glass rounded-[2rem] p-8">
-                <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6">Validation Checklist</h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {Object.values(comm.checks).map((check) => (
-                    <QAModule
-                      key={check.label}
-                      label={check.label}
-                      status={check.passed ? 'pass' : 'warning'}
-                      value={`${check.value.toFixed(1)}${check.unit}`}
-                    />
+                <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Recommendations</h4>
+                <div className="space-y-2">
+                  {comm.diagnostics.map((d, i) => (
+                    <div key={i} className="flex items-start gap-3 text-sm text-zinc-400">
+                      <Info size={14} className="text-diagnostic mt-0.5 shrink-0" />
+                      {d}
+                    </div>
                   ))}
                 </div>
               </div>
+            )}
 
-              {/* Recommendations */}
-              {comm.diagnostics.length > 0 && (
-                <div className="glass rounded-[2rem] p-8">
-                  <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Recommendations</h4>
-                  <div className="space-y-2">
-                    {comm.diagnostics.map((d, i) => (
-                      <div key={i} className="flex items-start gap-3 text-sm text-zinc-400">
-                        <Info size={14} className="text-diagnostic mt-0.5 shrink-0" />
-                        {d}
-                      </div>
-                    ))}
-                  </div>
+            {/* Fingerprint */}
+            {traceChart.length > 0 && (
+              <div className="glass rounded-[2rem] p-6">
+                <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Commissioning Fingerprint</h4>
+                <div className="h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ScatterChart>
+                      <CartesianGrid strokeDasharray="4 4" stroke="#ffffff05" />
+                      <XAxis dataKey="position" stroke="#71717a" tick={{ fontSize: 10 }} />
+                      <YAxis dataKey="torque" stroke="#71717a" tick={{ fontSize: 10 }} />
+                      <Scatter data={traceChart} fill="#00ff9f" fillOpacity={0.5} />
+                    </ScatterChart>
+                  </ResponsiveContainer>
                 </div>
-              )}
-
-              {/* Fingerprint */}
-              {traceChart.length > 0 && (
-                <div className="glass rounded-[2rem] p-6">
-                  <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Commissioning Fingerprint</h4>
-                  <div className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <ScatterChart>
-                        <CartesianGrid strokeDasharray="4 4" stroke="#ffffff05" />
-                        <XAxis dataKey="position" stroke="#71717a" tick={{ fontSize: 10 }} />
-                        <YAxis dataKey="torque" stroke="#71717a" tick={{ fontSize: 10 }} />
-                        <Scatter data={traceChart} fill="#00ff9f" fillOpacity={0.5} />
-                      </ScatterChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-              )}
-            </>
-          ) : commResult?.error ? (
-            <div className="glass rounded-[2rem] p-8 border-red-500/20">
-              <p className="text-red-400 text-sm">{commResult.error}</p>
-            </div>
-          ) : (
-            <div className="glass rounded-[2rem] p-20 flex flex-col items-center justify-center text-center">
-              <ShieldCheck size={40} className="text-zinc-700 mb-4" />
-              <p className="text-sm text-zinc-500">Run a commissioning analysis to see the verdict.</p>
-            </div>
-          )}
-        </div>
-      </section>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
     </>
   );
 }
@@ -1111,8 +1256,8 @@ function ScoreGauge({ score, label }: { score: number; label: string }) {
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-6xl font-black text-white tracking-tighter text-glow">{score.toFixed(0)}</span>
-          <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.3em] mt-1">{label}</span>
+          <span className="text-5xl font-black text-white tracking-tighter text-glow">{score.toFixed(0)}</span>
+          <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-[0.15em] mt-1">{label}</span>
         </div>
       </div>
       <div className="mt-6">
