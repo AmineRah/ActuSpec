@@ -81,6 +81,90 @@ function telemetryToChart(data: TelemetryRow[]) {
   }));
 }
 
+function traceToTorquePosition(data: TelemetryRow[]) {
+  const upStroke = data
+    .filter(r => r['rotation_direction'] === 1)
+    .map(r => ({ position: r['feedback_position_%'] ?? 0, torque: r['motor_torque_Nmm'] ?? 0 }))
+    .sort((a, b) => a.position - b.position);
+  const downStroke = data
+    .filter(r => r['rotation_direction'] === 2)
+    .map(r => ({ position: r['feedback_position_%'] ?? 0, torque: r['motor_torque_Nmm'] ?? 0 }))
+    .sort((a, b) => a.position - b.position);
+  const allPositions = new Set([
+    ...upStroke.map(p => Math.round(p.position)),
+    ...downStroke.map(p => Math.round(p.position)),
+  ]);
+  const merged: { position: number; torqueUp: number | null; torqueDown: number | null }[] = [];
+  for (const pos of Array.from(allPositions).sort((a, b) => a - b)) {
+    const up = upStroke.find(p => Math.round(p.position) === pos);
+    const down = downStroke.find(p => Math.round(p.position) === pos);
+    merged.push({ position: pos, torqueUp: up?.torque ?? null, torqueDown: down?.torque ?? null });
+  }
+  return merged;
+}
+
+function computeResistanceSegments(data: TelemetryRow[]) {
+  const upStroke = data.filter(r => r['rotation_direction'] === 1);
+  const segments: { start: number; end: number; effort: number }[] = [];
+  for (let start = 0; start < 100; start += 10) {
+    const end = start + 10;
+    const inBin = upStroke.filter(
+      r => (r['feedback_position_%'] ?? 0) >= start && (r['feedback_position_%'] ?? 0) < end
+    );
+    const avgTorque = inBin.length > 0
+      ? inBin.reduce((sum, r) => sum + Math.abs(r['motor_torque_Nmm'] ?? 0), 0) / inBin.length
+      : 0;
+    segments.push({ start, end, effort: avgTorque });
+  }
+  return segments;
+}
+
+function effortColor(effort: number, min: number, max: number): { bg: string; text: string } {
+  const range = max - min || 1;
+  const normalized = (effort - min) / range;
+  if (normalized < 0.3) return { bg: 'rgba(0,255,159,0.15)', text: '#00ff9f' };
+  if (normalized < 0.5) return { bg: 'rgba(0,255,159,0.08)', text: '#6ee7b7' };
+  if (normalized < 0.7) return { bg: 'rgba(251,191,36,0.15)', text: '#fbbf24' };
+  if (normalized < 0.85) return { bg: 'rgba(249,115,22,0.15)', text: '#f97316' };
+  return { bg: 'rgba(239,68,68,0.2)', text: '#ef4444' };
+}
+
+function ResistanceHeatmap({ segments }: { segments: { start: number; end: number; effort: number }[] }) {
+  if (segments.length === 0) return null;
+  const efforts = segments.map(s => s.effort);
+  const minE = Math.min(...efforts);
+  const maxE = Math.max(...efforts);
+  return (
+    <div className="glass rounded-[2rem] p-6">
+      <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">
+        Resistance Map — Stroke Position
+      </h4>
+      <div className="flex gap-0.5 h-14 rounded-xl overflow-hidden">
+        {segments.map((seg, i) => {
+          const c = effortColor(seg.effort, minE, maxE);
+          return (
+            <div
+              key={i}
+              className="flex-1 flex flex-col items-center justify-center transition-all duration-500 hover:scale-y-110 cursor-default"
+              style={{ background: c.bg }}
+              title={`${seg.start}–${seg.end}%: ${seg.effort.toFixed(1)} N·mm`}
+            >
+              <span className="text-[11px] font-bold font-mono" style={{ color: c.text }}>
+                {seg.effort.toFixed(0)}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex justify-between mt-2 px-1">
+        <span className="text-[9px] font-mono text-zinc-600">0%</span>
+        <span className="text-[9px] font-mono text-zinc-600">50%</span>
+        <span className="text-[9px] font-mono text-zinc-600">100%</span>
+      </div>
+    </div>
+  );
+}
+
 // ============================================================================
 // APP
 // ============================================================================
@@ -987,7 +1071,38 @@ function CommissioningTab({
       } catch (e) { console.error(e); }
     }
 
-    // Replay / fallback: simulated result
+    // Replay / fallback: generate realistic simulated trace
+    const simTrace: TelemetryRow[] = [];
+    for (let i = 0; i < 100; i++) {
+      const pos = i;
+      const baseTorque = 75 + 15 * Math.sin(pos * Math.PI / 100) + (Math.random() - 0.5) * 8;
+      const midBump = pos > 40 && pos < 60 ? 12 * Math.exp(-((pos - 50) ** 2) / 50) : 0;
+      simTrace.push({
+        '_time': `2026-03-19T10:00:${String(i).padStart(2, '0')}.000Z`,
+        'feedback_position_%': pos,
+        'setpoint_position_%': pos + (Math.random() - 0.5) * 2,
+        'motor_torque_Nmm': baseTorque + midBump,
+        'internal_temperature_deg_C': 25.5 + i * 0.05 + Math.random() * 0.3,
+        'power_W': 1.0 + Math.random() * 0.5,
+        'rotation_direction': 1,
+        'test_number': 200,
+      } as TelemetryRow);
+    }
+    for (let i = 0; i < 100; i++) {
+      const pos = 100 - i;
+      const baseTorque = 70 + 12 * Math.sin(pos * Math.PI / 100) + (Math.random() - 0.5) * 6;
+      simTrace.push({
+        '_time': `2026-03-19T10:01:${String(i).padStart(2, '0')}.000Z`,
+        'feedback_position_%': pos,
+        'setpoint_position_%': pos + (Math.random() - 0.5) * 2,
+        'motor_torque_Nmm': baseTorque,
+        'internal_temperature_deg_C': 30.5 + i * 0.02 + Math.random() * 0.2,
+        'power_W': 0.8 + Math.random() * 0.4,
+        'rotation_direction': 2,
+        'test_number': 200,
+      } as TelemetryRow);
+    }
+
     const simulated: RunResult = {
       score: 70,
       baseline_profile: { '5': 120, '15': 135, '25': 142, '35': 150, '45': 158, '55': 155, '65': 148, '75': 140, '85': 130, '95': 118 },
@@ -1004,7 +1119,7 @@ function CommissioningTab({
         },
         diagnostics: ['Temperature rise exceeds threshold — check valve load sizing.'],
       },
-      trace: [],
+      trace: simTrace,
       error: null,
     };
     setCommResult(simulated);
@@ -1161,9 +1276,37 @@ function CommissioningTab({
             </Button>
           </div>
 
-          {/* Right side: checks + recommendations */}
+          {/* Right column: recommendations + checks + heatmap + torque signature */}
           <div className="col-span-12 xl:col-span-8 flex flex-col gap-6">
-            {/* Check breakdown */}
+            {/* Recommendations */}
+            {comm.diagnostics.length > 0 && (() => {
+              const verdictStyles = {
+                PASS:     { border: 'border-[#00ff9f]/20', bg: 'bg-[#00ff9f]/5',  icon: '#00ff9f', label: 'All Clear', labelBg: 'bg-[#00ff9f]/10 text-[#00ff9f]' },
+                MARGINAL: { border: 'border-amber-400/20',  bg: 'bg-amber-400/5',   icon: '#fbbf24', label: 'Action Suggested', labelBg: 'bg-amber-400/10 text-amber-400' },
+                FAIL:     { border: 'border-red-500/20',    bg: 'bg-red-500/5',     icon: '#ef4444', label: 'Action Required', labelBg: 'bg-red-500/10 text-red-400' },
+              };
+              const vs = verdictStyles[comm.verdict] || verdictStyles.MARGINAL;
+              return (
+                <div className={`glass rounded-[2rem] p-8 ${vs.border} border`}>
+                  <div className="flex items-center justify-between mb-5">
+                    <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest">Recommendations</h4>
+                    <span className={`text-[9px] font-bold uppercase tracking-widest px-3 py-1 rounded-full ${vs.labelBg}`}>
+                      {vs.label}
+                    </span>
+                  </div>
+                  <div className="space-y-3">
+                    {comm.diagnostics.map((d, i) => (
+                      <div key={i} className={`flex items-start gap-3 p-3 rounded-xl ${vs.bg}`}>
+                        <AlertTriangle size={14} className="mt-0.5 shrink-0" style={{ color: vs.icon }} />
+                        <span className="text-sm text-zinc-300">{d}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+
+            {/* Validation Checklist */}
             <div className="glass rounded-[2rem] p-8">
               <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-6">Validation Checklist</h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -1178,37 +1321,51 @@ function CommissioningTab({
               </div>
             </div>
 
-            {/* Recommendations */}
-            {comm.diagnostics.length > 0 && (
-              <div className="glass rounded-[2rem] p-8">
-                <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Recommendations</h4>
-                <div className="space-y-2">
-                  {comm.diagnostics.map((d, i) => (
-                    <div key={i} className="flex items-start gap-3 text-sm text-zinc-400">
-                      <Info size={14} className="text-diagnostic mt-0.5 shrink-0" />
-                      {d}
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {/* Resistance Heatmap */}
+            {commResult?.trace && commResult.trace.length > 0 && (
+              <ResistanceHeatmap segments={computeResistanceSegments(commResult.trace)} />
             )}
 
-            {/* Fingerprint */}
-            {traceChart.length > 0 && (
-              <div className="glass rounded-[2rem] p-6">
-                <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">Commissioning Fingerprint</h4>
-                <div className="h-[300px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <ScatterChart>
-                      <CartesianGrid strokeDasharray="4 4" stroke="#ffffff05" />
-                      <XAxis dataKey="position" stroke="#71717a" tick={{ fontSize: 10 }} />
-                      <YAxis dataKey="torque" stroke="#71717a" tick={{ fontSize: 10 }} />
-                      <Scatter data={traceChart} fill="#00ff9f" fillOpacity={0.5} />
-                    </ScatterChart>
-                  </ResponsiveContainer>
+            {/* Torque–Position Signature */}
+            {commResult?.trace && commResult.trace.length > 0 && (() => {
+              const torquePosData = traceToTorquePosition(commResult.trace);
+              return (
+                <div className="glass rounded-[2rem] p-6">
+                  <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">
+                    Torque–Position Signature
+                  </h4>
+                  <div className="h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart data={torquePosData}>
+                        <CartesianGrid strokeDasharray="4 4" stroke="#ffffff05" />
+                        <XAxis dataKey="position" stroke="#71717a" tick={{ fontSize: 10 }}
+                          label={{ value: 'Stroke Position (%)', position: 'insideBottom', offset: -5, style: { fontSize: 10, fill: '#71717a' } }} />
+                        <YAxis stroke="#71717a" tick={{ fontSize: 10 }}
+                          label={{ value: 'Torque (N·mm)', angle: -90, position: 'insideLeft', style: { fontSize: 10, fill: '#71717a' } }} />
+                        <Tooltip
+                          cursor={{ stroke: 'rgba(255,255,255,0.05)' }}
+                          contentStyle={{ background: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 11 }}
+                          labelFormatter={(v: number) => `Position: ${v}%`}
+                        />
+                        <Line type="monotone" dataKey="torqueUp" name="Up-stroke ↑" stroke="#00ff9f" strokeWidth={2} dot={false} connectNulls />
+                        <Line type="monotone" dataKey="torqueDown" name="Down-stroke ↓" stroke="#a78bfa" strokeWidth={2} dot={false} connectNulls strokeDasharray="6 3" />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                  <div className="flex items-center justify-center gap-6 mt-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-0.5 bg-[#00ff9f]" />
+                      <span className="text-[10px] text-zinc-500 font-mono">Up-stroke</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-4 h-0.5 border-t-2 border-dashed border-[#a78bfa]" />
+                      <span className="text-[10px] text-zinc-500 font-mono">Down-stroke</span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            )}
+              );
+            })()}
+
           </div>
         </section>
       )}
