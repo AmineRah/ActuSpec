@@ -9,7 +9,10 @@
       "Bash(python -c \"from charts import *; print\\(''charts OK''\\)\")",
       "Bash(python -c \":*)",
       "Bash(grep -n \"^def \" /c/Users/Amine/Documents/Belimo_hack/*.py)",
-      "Bash(grep -n \"load_baseline_from_file\\\\|list_scenarios\\\\|_profile_to_df\\\\|_get_client\\\\|_clean_df\" /c/Users/Amine/Documents/Belimo_hack/*.py)"
+      "Bash(grep -n \"load_baseline_from_file\\\\|list_scenarios\\\\|_profile_to_df\\\\|_get_client\\\\|_clean_df\" /c/Users/Amine/Documents/Belimo_hack/*.py)",
+      "Bash(pip install:*)",
+      "Bash(npx vite:*)",
+      "Bash(python3 -c \":*)"
     ]
   }
 }

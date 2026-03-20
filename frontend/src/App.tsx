@@ -81,28 +81,6 @@ function telemetryToChart(data: TelemetryRow[]) {
   }));
 }
 
-function traceToTorquePosition(data: TelemetryRow[]) {
-  const upStroke = data
-    .filter(r => r['rotation_direction'] === 1)
-    .map(r => ({ position: r['feedback_position_%'] ?? 0, torque: r['motor_torque_Nmm'] ?? 0 }))
-    .sort((a, b) => a.position - b.position);
-  const downStroke = data
-    .filter(r => r['rotation_direction'] === 2)
-    .map(r => ({ position: r['feedback_position_%'] ?? 0, torque: r['motor_torque_Nmm'] ?? 0 }))
-    .sort((a, b) => a.position - b.position);
-  const allPositions = new Set([
-    ...upStroke.map(p => Math.round(p.position)),
-    ...downStroke.map(p => Math.round(p.position)),
-  ]);
-  const merged: { position: number; torqueUp: number | null; torqueDown: number | null }[] = [];
-  for (const pos of Array.from(allPositions).sort((a, b) => a - b)) {
-    const up = upStroke.find(p => Math.round(p.position) === pos);
-    const down = downStroke.find(p => Math.round(p.position) === pos);
-    merged.push({ position: pos, torqueUp: up?.torque ?? null, torqueDown: down?.torque ?? null });
-  }
-  return merged;
-}
-
 function computeResistanceSegments(data: TelemetryRow[]) {
   const upStroke = data.filter(r => r['rotation_direction'] === 1);
   const segments: { start: number; end: number; effort: number }[] = [];
@@ -147,7 +125,7 @@ function ResistanceHeatmap({ segments }: { segments: { start: number; end: numbe
               key={i}
               className="flex-1 flex flex-col items-center justify-center transition-all duration-500 hover:scale-y-110 cursor-default"
               style={{ background: c.bg }}
-              title={`${seg.start}–${seg.end}%: ${seg.effort.toFixed(1)} N·mm`}
+              title={`${seg.start}–${seg.end}%: ${seg.effort.toFixed(1)} N·m`}
             >
               <span className="text-[11px] font-bold font-mono" style={{ color: c.text }}>
                 {seg.effort.toFixed(0)}
@@ -173,10 +151,10 @@ export default function App() {
   const [mode, setMode] = useState<AppMode>('replay');
   const [activeTab, setActiveTab] = useState<ActiveTab>('dashboard');
   const [runState, setRunState] = useState<RunState>('idle');
+  const [networkName, setNetworkName] = useState('unknown');
 
   // Telemetry
   const [telemetry, setTelemetry] = useState<TelemetryRow[]>([]);
-  const [autoRefresh, setAutoRefresh] = useState(false);
 
   // Baseline
   const [baselineProfile, setBaselineProfile] = useState<TorqueProfile | null>(null);
@@ -204,14 +182,30 @@ export default function App() {
     loadFleet();
   }, [mode]);
 
-  // Auto-refresh telemetry
+  // Load runtime config (network name, thresholds, etc.)
   useEffect(() => {
-    if (!autoRefresh || mode !== 'live') return;
+    const loadConfig = async () => {
+      try {
+        const cfg = await api.getConfig();
+        if (cfg.network_name) setNetworkName(cfg.network_name);
+      } catch {
+        // Keep last known label.
+      }
+    };
+    loadConfig();
+    const id = setInterval(loadConfig, 15000);
+    return () => clearInterval(id);
+  }, []);
+
+  // Auto-refresh telemetry in live mode
+  useEffect(() => {
+    if (mode !== 'live') return;
+    api.getRecentTelemetry('-5m').then(setTelemetry).catch(() => {});
     const id = setInterval(() => {
       api.getRecentTelemetry('-5m').then(setTelemetry).catch(() => {});
     }, 2000);
     return () => clearInterval(id);
-  }, [autoRefresh, mode]);
+  }, [mode]);
 
   // Poll state
   useEffect(() => {
@@ -269,7 +263,7 @@ export default function App() {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-500">
               <span className={cn("w-1.5 h-1.5 rounded-full", mode === 'live' ? "bg-diagnostic" : "bg-zinc-600")} />
-              {mode === 'live' ? 'INFLUX: CONNECTED' : 'SOURCE: LOCAL'}
+              {mode === 'live' ? 'SOURCE: LIVE (INFLUX)' : 'SOURCE: LOCAL'}
             </div>
 
             <div className="h-8 w-px bg-white/5" />
@@ -317,6 +311,8 @@ export default function App() {
           {activeTab === 'dashboard' && (
             <BuildingOverviewTab
               mode={mode}
+              networkName={networkName}
+              latestTelemetry={latest}
               fleetScores={fleetScores}
               setFleetScores={setFleetScores}
               healthResult={healthResult}
@@ -339,8 +335,6 @@ export default function App() {
               mode={mode}
               healthResult={healthResult}
               setHealthResult={setHealthResult}
-              fleetScores={fleetScores}
-              setFleetScores={setFleetScores}
               loading={loading}
               setLoading={setLoading}
             />
@@ -366,9 +360,11 @@ export default function App() {
 // ============================================================================
 
 function BuildingOverviewTab({
-  mode, fleetScores, setFleetScores, healthResult, commResult, loading, setLoading,
+  mode, networkName, latestTelemetry, fleetScores, setFleetScores, healthResult, commResult, loading, setLoading,
 }: {
   mode: AppMode;
+  networkName: string;
+  latestTelemetry: TelemetryRow | null;
   fleetScores: FleetScore[];
   setFleetScores: (s: FleetScore[]) => void;
   healthResult: RunResult | null;
@@ -376,35 +372,31 @@ function BuildingOverviewTab({
   loading: string | null;
   setLoading: (v: string | null) => void;
 }) {
-  const SIMULATED_FLEET: FleetScore[] = [
-    { test_number: 1, score: 94 },
-    { test_number: 2, score: 87 },
-    { test_number: 3, score: 72 },
-    { test_number: 4, score: 91 },
-    { test_number: 5, score: 45 },
-    { test_number: 6, score: 88 },
-    { test_number: 7, score: 63 },
-    { test_number: 8, score: 96 },
-  ];
-
   const refreshFleet = async () => {
     setLoading('Refreshing fleet data...');
     try {
       const scores = mode === 'live' ? await api.getFleetScores() : await api.getReplayFleetScores();
       setFleetScores(scores);
     } catch (e) {
-      console.error('API unavailable, using simulated fleet:', e);
-      setFleetScores(SIMULATED_FLEET);
+      console.error('Fleet query failed:', e);
+      setFleetScores([]);
     }
     setLoading(null);
   };
 
-  // Auto-load fleet data on mount
-  useEffect(() => {
-    if (fleetScores.length === 0) {
-      setFleetScores(SIMULATED_FLEET);
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  const fleetEntityLabel = 'actuators';
+  const fleetEntityUnit = 'actuators';
+
+  const fmt = (v: number | undefined, digits = 1): string =>
+    Number.isFinite(v) ? (v as number).toFixed(digits) : '—';
+
+  const directionLabel = (() => {
+    const d = latestTelemetry?.rotation_direction;
+    if (d === 0) return '0 (still)';
+    if (d === 1) return '1 (opening)';
+    if (d === 2) return '2 (closing)';
+    return '—';
+  })();
 
   // Computed stats
   const fleetAvg = fleetScores.length > 0 ? fleetScores.reduce((a, b) => a + b.score, 0) / fleetScores.length : 0;
@@ -418,7 +410,7 @@ function BuildingOverviewTab({
 
   return (
     <>
-      <SectionHeader title="Building Overview" subtitle="Fleet-wide actuator health at a glance" />
+      <SectionHeader title="Building Overview" subtitle="Fleet health across recent test runs" />
 
       {/* Central gauge + KPI cards */}
       <section className="grid grid-cols-12 gap-10">
@@ -428,7 +420,7 @@ function BuildingOverviewTab({
             <ScoreGauge score={fleetScores.length > 0 ? fleetAvg : 0} label="Building Health" />
             <p className="mt-6 text-[10px] text-zinc-500 font-mono uppercase tracking-widest text-center">
               {fleetScores.length > 0
-                ? `Average across ${fleetScores.length} actuators`
+                ? `Average across ${fleetScores.length} ${fleetEntityLabel}`
                 : 'No fleet data loaded yet'}
             </p>
             <Button onClick={refreshFleet} disabled={!!loading} variant="outline"
@@ -443,16 +435,16 @@ function BuildingOverviewTab({
           <MetricModule
             label="Fleet Size"
             value={String(fleetScores.length)}
-            unit="actuators"
+            unit={fleetEntityUnit}
             icon={<BarChart3 size={18} />}
             trend="Monitored"
             data={[]}
             color="#00ff9f"
           />
           <MetricModule
-            label="Worst Device"
+            label="Weakest Actuator"
             value={fleetWorst ? String(fleetWorst.score.toFixed(0)) : '—'}
-            unit={fleetWorst ? `/100 (#${fleetWorst.test_number})` : ''}
+            unit={fleetWorst ? `/100 (${fleetWorst.test_number})` : ''}
             icon={<AlertTriangle size={18} />}
             trend={fleetWorst && fleetWorst.score < 50 ? 'Critical' : fleetWorst && fleetWorst.score < 80 ? 'Degraded' : 'OK'}
             data={[]}
@@ -479,7 +471,7 @@ function BuildingOverviewTab({
 
           {/* Status breakdown */}
           <div className="col-span-2 glass rounded-[2rem] p-6">
-            <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Device Status Breakdown</h4>
+            <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-4">Status Breakdown</h4>
             <div className="flex items-center gap-4">
               <div className="flex-1 flex items-center gap-3">
                 <div className="w-3 h-3 rounded-full bg-[#00ff9f] shadow-[0_0_8px_rgba(0,255,159,0.5)]" />
@@ -540,7 +532,7 @@ function BuildingOverviewTab({
             </div>
             <div className="flex justify-between items-center py-2 border-b border-white/5">
               <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Network</span>
-              <span className="text-xs font-mono text-diagnostic">BELIMO-3</span>
+              <span className="text-xs font-mono text-diagnostic">{networkName || 'unknown'}</span>
             </div>
             <div className="flex justify-between items-center py-2">
               <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Application</span>
@@ -562,12 +554,12 @@ function BuildingOverviewTab({
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {[
-              { signal: 'feedback_position_%', unit: '0–100 %', desc: 'Measured shaft position (0=closed, 100=open)', icon: <RotateCcw size={14} />, live: '67.3 %' },
-              { signal: 'setpoint_position_%', unit: '0–100 %', desc: 'Commanded target position', icon: <Crosshair size={14} />, live: '70.0 %' },
-              { signal: 'motor_torque_Nmm', unit: 'N·mm', desc: 'Motor torque — the core diagnostic signal', icon: <Activity size={14} />, live: '142 N·mm' },
-              { signal: 'internal_temperature_deg_C', unit: '°C', desc: 'Internal PCB temperature', icon: <Thermometer size={14} />, live: '38.4 °C' },
-              { signal: 'power_W', unit: 'W', desc: 'Electrical power consumption', icon: <Zap size={14} />, live: '2.1 W' },
-              { signal: 'rotation_direction', unit: '0/1/2', desc: '0=still, 1=opening, 2=closing', icon: <RotateCcw size={14} />, live: '1 (opening)' },
+              { signal: 'feedback_position_%', unit: '0–100 %', desc: 'Measured shaft position (0=closed, 100=open)', icon: <RotateCcw size={14} />, live: `${fmt(latestTelemetry?.['feedback_position_%'])} %` },
+              { signal: 'setpoint_position_%', unit: '0–100 %', desc: 'Commanded target position', icon: <Crosshair size={14} />, live: `${fmt(latestTelemetry?.['setpoint_position_%'])} %` },
+              { signal: 'motor_torque_Nmm', unit: 'N·m', desc: 'Motor torque — the core diagnostic signal', icon: <Activity size={14} />, live: `${fmt(latestTelemetry?.['motor_torque_Nmm'])} N·m` },
+              { signal: 'internal_temperature_deg_C', unit: '°C', desc: 'Internal PCB temperature', icon: <Thermometer size={14} />, live: `${fmt(latestTelemetry?.['internal_temperature_deg_C'])} °C` },
+              { signal: 'power_W', unit: 'W', desc: 'Electrical power consumption', icon: <Zap size={14} />, live: `${fmt(latestTelemetry?.['power_W'])} W` },
+              { signal: 'rotation_direction', unit: '0/1/2', desc: '0=still, 1=opening, 2=closing', icon: <RotateCcw size={14} />, live: directionLabel },
             ].map(({ signal, unit, desc, icon, live }) => (
               <div key={signal} className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all group">
                 <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center shrink-0 mt-0.5 text-zinc-500 group-hover:text-diagnostic transition-colors">
@@ -605,7 +597,7 @@ function BuildingOverviewTab({
                 <div>
                   <h3 className="text-white font-bold tracking-tight">Fleet Health Map</h3>
                   <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">
-                    Score per actuator — {mode === 'live' ? 'last 24h' : 'simulated'}
+                    Score per {mode === 'live' ? 'test run' : 'scenario'} — {mode === 'live' ? 'last 24h' : 'replay demo'}
                   </p>
                 </div>
               </div>
@@ -623,7 +615,7 @@ function BuildingOverviewTab({
                       if (active && payload && payload.length) {
                         return (
                           <div style={{ background: 'rgba(0,0,0,0.85)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 12, padding: '8px 12px', backdropFilter: 'blur(12px)' }}>
-                            <p className="text-[10px] text-zinc-400">Actuator: {payload[0].payload.test_number}</p>
+                            <p className="text-[10px] text-zinc-400">{mode === 'live' ? 'Test' : 'Scenario'}: {payload[0].payload.test_number}</p>
                             <p className="text-xs font-bold" style={{ color: scoreColor(payload[0].value as number) }}>
                               {(payload[0].value as number).toFixed(1)} / 100
                             </p>
@@ -662,27 +654,38 @@ function BaselineTab({
   loading: string | null;
   setLoading: (v: string | null) => void;
 }) {
+  const [baselineError, setBaselineError] = useState<string | null>(null);
   const profileData = baselineProfile ? profileToChartData(baselineProfile, 'Baseline') : [];
 
   const runStroke = async (name: string) => {
     setLoading(`Running ${name} stroke...`);
+    setBaselineError(null);
     try {
       await api.runBaseline(name);
-    } catch (e) { console.error(e); }
+    } catch (e: any) {
+      setBaselineError(e?.message || 'Failed to run stroke');
+    }
     setLoading(null);
   };
 
   const loadProfile = async () => {
     setLoading('Loading baseline profile...');
+    setBaselineError(null);
     try {
       if (mode === 'live') {
         const r = await api.loadLiveBaseline();
-        if (r.ok && r.profile) setBaselineProfile(r.profile);
+        if (r.ok && r.profile) {
+          setBaselineProfile(r.profile);
+        } else {
+          setBaselineError(r.message || 'No live baseline data found. Run a baseline stroke first.');
+        }
       } else {
         const p = await api.getBaselineProfile();
         setBaselineProfile(p);
       }
-    } catch (e) { console.error(e); }
+    } catch (e: any) {
+      setBaselineError(e?.message || 'Failed to load baseline');
+    }
     setLoading(null);
   };
 
@@ -725,11 +728,18 @@ function BaselineTab({
             )}
           </div>
 
+          {/* Error display */}
+          {baselineError && (
+            <div className="glass rounded-[2rem] p-6 border border-red-500/20">
+              <p className="text-red-400 text-sm">{baselineError}</p>
+            </div>
+          )}
+
           {/* Baseline metrics */}
           {baselineProfile && (
             <div className="flex flex-col gap-4">
               <MetricModule label="Peak Bin" value={`${peakBin.position}%`} unit="" icon={<Gauge size={18} />} trend="Highest stress" data={[]} color="#00ff9f" />
-              <MetricModule label="Peak |Torque|" value={`${(peakBin.torque ?? 0).toFixed(1)}`} unit="Nm" icon={<Activity size={18} />} trend="" data={[]} color="#00ff9f" />
+              <MetricModule label="Peak |Torque|" value={`${(peakBin.torque ?? 0).toFixed(1)}`} unit="N·m" icon={<Activity size={18} />} trend="" data={[]} color="#00ff9f" />
               <MetricModule label="Coverage" value={`${profileData.length}`} unit="bins" icon={<BarChart3 size={18} />} trend="Valid positions" data={[]} color="#00ff9f" />
             </div>
           )}
@@ -754,14 +764,14 @@ function BaselineTab({
                     </defs>
                     <CartesianGrid strokeDasharray="4 4" stroke="#ffffff05" />
                     <XAxis dataKey="position" stroke="#71717a" tick={{ fontSize: 10, fontFamily: 'JetBrains Mono' }} label={{ value: 'Position Bin (%)', position: 'bottom', fill: '#71717a', fontSize: 11 }} />
-                    <YAxis stroke="#71717a" tick={{ fontSize: 10, fontFamily: 'JetBrains Mono' }} label={{ value: 'Mean |Torque| (Nm)', angle: -90, position: 'insideLeft', fill: '#71717a', fontSize: 11 }} />
+                    <YAxis stroke="#71717a" tick={{ fontSize: 10, fontFamily: 'JetBrains Mono' }} label={{ value: 'Mean |Torque| (N·m)', angle: -90, position: 'insideLeft', fill: '#71717a', fontSize: 11 }} />
                     <Tooltip
                       content={({ active, payload }) => {
                         if (active && payload && payload.length) {
                           return (
                             <div className="glass p-3 rounded-xl border-white/10">
                               <p className="text-[10px] text-zinc-400">Bin: {payload[0].payload.position}%</p>
-                              <p className="text-xs font-bold text-diagnostic">{(payload[0].value as number).toFixed(1)} Nm</p>
+                              <p className="text-xs font-bold text-diagnostic">{(payload[0].value as number).toFixed(1)} N·m</p>
                             </div>
                           );
                         }
@@ -790,13 +800,11 @@ function BaselineTab({
 // ============================================================================
 
 function HealthTab({
-  mode, healthResult, setHealthResult, fleetScores, setFleetScores, loading, setLoading,
+  mode, healthResult, setHealthResult, loading, setLoading,
 }: {
   mode: AppMode;
   healthResult: RunResult | null;
   setHealthResult: (r: RunResult | null) => void;
-  fleetScores: FleetScore[];
-  setFleetScores: (s: FleetScore[]) => void;
   loading: string | null;
   setLoading: (v: string | null) => void;
 }) {
@@ -813,7 +821,9 @@ function HealthTab({
         result = await api.runReplayHealth(scenario);
       }
       setHealthResult(result);
-    } catch (e) { console.error(e); }
+    } catch (e: any) {
+      setHealthResult({ error: e?.message || 'Health analysis failed', score: 0, trace: [], diagnostics: [] } as RunResult);
+    }
     setLoading(null);
   };
 
@@ -822,16 +832,9 @@ function HealthTab({
     try {
       const result = await api.evaluateHealth(testNum);
       setHealthResult(result);
-    } catch (e) { console.error(e); }
-    setLoading(null);
-  };
-
-  const loadFleet = async () => {
-    setLoading('Computing fleet scores...');
-    try {
-      const scores = mode === 'live' ? await api.getFleetScores() : await api.getReplayFleetScores();
-      setFleetScores(scores);
-    } catch (e) { console.error(e); }
+    } catch (e: any) {
+      setHealthResult({ error: e?.message || 'Evaluation failed', score: 0, trace: [], diagnostics: [] } as RunResult);
+    }
     setLoading(null);
   };
 
@@ -912,7 +915,7 @@ function HealthTab({
                             return (
                               <div className="glass p-3 rounded-xl border-white/10">
                                 <p className="text-[10px] text-zinc-400">Pos: {payload[0].payload.position}%</p>
-                                <p className="text-[10px] font-bold text-white">{(payload[0].value as number).toFixed(1)} Nm</p>
+                                <p className="text-[10px] font-bold text-white">{(payload[0].value as number).toFixed(1)} N·m</p>
                               </div>
                             );
                           }
@@ -958,54 +961,6 @@ function HealthTab({
         </div>
       </section>
 
-      {/* Fleet Intelligence */}
-      <section className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h2 className="text-xs font-bold text-zinc-500 uppercase tracking-[0.3em]">Fleet Intelligence</h2>
-          <div className="h-px flex-1 mx-8 bg-white/5" />
-          <Button onClick={loadFleet} disabled={!!loading} variant="outline" className="h-9 rounded-lg text-[10px] font-bold uppercase tracking-widest border-white/10">
-            <BarChart3 size={14} className="mr-2" /> Compute Fleet
-          </Button>
-        </div>
-
-        {fleetScores.length > 0 ? (
-          <div className="glass rounded-[2rem] p-8">
-            <div className="h-[320px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={fleetScores}>
-                  <CartesianGrid strokeDasharray="4 4" stroke="#ffffff05" />
-                  <XAxis dataKey="test_number" stroke="#71717a" tick={{ fontSize: 10 }} />
-                  <YAxis domain={[0, 100]} stroke="#71717a" tick={{ fontSize: 10 }} />
-                  <Tooltip content={({ active, payload }) => {
-                    if (active && payload && payload.length) {
-                      return (
-                        <div className="glass p-3 rounded-xl border-white/10">
-                          <p className="text-[10px] text-zinc-400">Test: {payload[0].payload.test_number}</p>
-                          <p className="text-xs font-bold" style={{ color: scoreColor(payload[0].value as number) }}>{(payload[0].value as number).toFixed(1)}</p>
-                        </div>
-                      );
-                    }
-                    return null;
-                  }} />
-                  <Bar dataKey="score" radius={[8, 8, 0, 0]}>
-                    {fleetScores.map((entry, i) => (
-                      <Cell key={i} fill={scoreColor(entry.score)} fillOpacity={0.8} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            </div>
-            <div className="grid grid-cols-2 gap-4 mt-6">
-              <MetricModule label="Fleet Average" value={(fleetScores.reduce((a, b) => a + b.score, 0) / fleetScores.length).toFixed(1)} unit="/100" icon={<BarChart3 size={18} />} trend="" data={[]} color="#00ff9f" />
-              <MetricModule label="Lowest" value={`${Math.min(...fleetScores.map(s => s.score)).toFixed(1)}`} unit="/100" icon={<AlertTriangle size={18} />} trend="" data={[]} color="#ef4444" />
-            </div>
-          </div>
-        ) : (
-          <div className="glass rounded-[2rem] p-12 text-center">
-            <p className="text-sm text-zinc-600">Click Compute Fleet to generate cross-test scores.</p>
-          </div>
-        )}
-      </section>
     </>
   );
 }
@@ -1050,79 +1005,116 @@ function CommissioningTab({
     'Computing verdict...',
   ];
 
+  const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
   const runComm = async () => {
     setStep(2);
     setProgress(0);
     setActiveCheck(CHECKS_SEQUENCE[0]);
 
-    // Animate through the 12 check steps
-    for (let i = 0; i < CHECKS_SEQUENCE.length; i++) {
-      setActiveCheck(CHECKS_SEQUENCE[i]);
-      setProgress(Math.round(((i + 1) / CHECKS_SEQUENCE.length) * 100));
-      await new Promise(r => setTimeout(r, 400));
-    }
-
     if (mode === 'live') {
+      let stopProgress = false;
+      const runStartedMs = Date.now();
+
+      const progressLoop = (async () => {
+        let seqLen = 9;
+        let stepDelaySec = 3;
+        let analyzeIdx = 0;
+        try {
+          const cfg = await api.getConfig();
+          seqLen = cfg.seq_free_stroke?.length ?? seqLen;
+          stepDelaySec = cfg.seq_step_delay ?? stepDelaySec;
+        } catch {
+          // Use defaults if config endpoint is unavailable.
+        }
+
+        const commandMsgs = CHECKS_SEQUENCE.slice(0, 6);
+        const analyzeMsgs = CHECKS_SEQUENCE.slice(7, 11);
+        const commandDurationMs = Math.max(1, seqLen - 1) * stepDelaySec * 1000;
+
+        while (!stopProgress) {
+          let state: RunState = 'commanding';
+          try {
+            state = (await api.getState()) as RunState;
+          } catch {
+            // Keep last inferred state when polling fails.
+          }
+
+          if (state === 'commanding') {
+            const pct = Math.min(1, (Date.now() - runStartedMs) / commandDurationMs);
+            const idx = Math.min(commandMsgs.length - 1, Math.floor(pct * commandMsgs.length));
+            setActiveCheck(commandMsgs[idx]);
+            setProgress(Math.max(5, Math.round(5 + pct * 55)));
+          } else if (state === 'collecting') {
+            setActiveCheck('Collecting telemetry...');
+            setProgress((p) => Math.max(p, 70));
+          } else if (state === 'analyzing') {
+            setActiveCheck(analyzeMsgs[analyzeIdx % analyzeMsgs.length]);
+            analyzeIdx += 1;
+            setProgress((p) => Math.min(95, Math.max(p, 75) + 3));
+          } else if (state === 'done') {
+            setActiveCheck('Computing verdict...');
+            setProgress(100);
+            break;
+          } else if (state === 'error') {
+            setActiveCheck('Run failed. Check Influx/MP-Bus connectivity.');
+            break;
+          }
+
+          await sleep(900);
+        }
+      })();
+
       try {
         const result = await api.runLiveCommissioning(testNum);
         setCommResult(result);
-        setStep(3);
-        return;
-      } catch (e) { console.error(e); }
+        if (!result.error) {
+          setActiveCheck('Computing verdict...');
+          setProgress(100);
+        }
+      } catch (e) {
+        console.error(e);
+        const message = e instanceof Error ? e.message : 'Live commissioning failed.';
+        setCommResult({
+          trace: [],
+          baseline_profile: {},
+          current_profile: {},
+          score: 0,
+          diagnostics: [],
+          commissioning: null,
+          error: message,
+        });
+      } finally {
+        stopProgress = true;
+        await progressLoop;
+      }
+      setStep(3);
+      return;
     }
 
-    // Replay / fallback: generate realistic simulated trace
-    const simTrace: TelemetryRow[] = [];
-    for (let i = 0; i < 100; i++) {
-      const pos = i;
-      const baseTorque = 75 + 15 * Math.sin(pos * Math.PI / 100) + (Math.random() - 0.5) * 8;
-      const midBump = pos > 40 && pos < 60 ? 12 * Math.exp(-((pos - 50) ** 2) / 50) : 0;
-      simTrace.push({
-        '_time': `2026-03-19T10:00:${String(i).padStart(2, '0')}.000Z`,
-        'feedback_position_%': pos,
-        'setpoint_position_%': pos + (Math.random() - 0.5) * 2,
-        'motor_torque_Nmm': baseTorque + midBump,
-        'internal_temperature_deg_C': 25.5 + i * 0.05 + Math.random() * 0.3,
-        'power_W': 1.0 + Math.random() * 0.5,
-        'rotation_direction': 1,
-        'test_number': 200,
-      } as TelemetryRow);
-    }
-    for (let i = 0; i < 100; i++) {
-      const pos = 100 - i;
-      const baseTorque = 70 + 12 * Math.sin(pos * Math.PI / 100) + (Math.random() - 0.5) * 6;
-      simTrace.push({
-        '_time': `2026-03-19T10:01:${String(i).padStart(2, '0')}.000Z`,
-        'feedback_position_%': pos,
-        'setpoint_position_%': pos + (Math.random() - 0.5) * 2,
-        'motor_torque_Nmm': baseTorque,
-        'internal_temperature_deg_C': 30.5 + i * 0.02 + Math.random() * 0.2,
-        'power_W': 0.8 + Math.random() * 0.4,
-        'rotation_direction': 2,
-        'test_number': 200,
-      } as TelemetryRow);
+    // Replay animation
+    for (let i = 0; i < CHECKS_SEQUENCE.length; i++) {
+      setActiveCheck(CHECKS_SEQUENCE[i]);
+      setProgress(Math.round(((i + 1) / CHECKS_SEQUENCE.length) * 100));
+      await sleep(400);
     }
 
-    const simulated: RunResult = {
-      score: 70,
-      baseline_profile: { '5': 120, '15': 135, '25': 142, '35': 150, '45': 158, '55': 155, '65': 148, '75': 140, '85': 130, '95': 118 },
-      current_profile: { '5': 125, '15': 145, '25': 155, '35': 168, '45': 172, '55': 165, '65': 155, '75': 148, '85': 138, '95': 122 },
-      diagnostics: ['Minor thermal anomaly detected.', 'Verify valve sizing matches zone demand.'],
-      commissioning: {
-        score: 70,
-        verdict: 'MARGINAL',
-        checks: {
-          range: { label: 'Range of Motion', value: 78, unit: '%', threshold: 60, passed: true, penalty: 0 },
-          torque: { label: 'Torque Variability', value: 1.3, unit: 'CV', threshold: 1.5, passed: true, penalty: 0 },
-          tracking: { label: 'Tracking Error', value: 8.5, unit: '%', threshold: 10, passed: true, penalty: 0 },
-          temp: { label: 'Temperature Rise', value: 6.2, unit: '°C', threshold: 5, passed: false, penalty: 15 },
-        },
-        diagnostics: ['Temperature rise exceeds threshold — check valve load sizing.'],
-      },
-      trace: simTrace,
-      error: null,
-    };
-    setCommResult(simulated);
+    // Use real backend replay endpoint — same scoring pipeline as live mode
+    try {
+      const result = await api.runReplayCommissioning();
+      setCommResult(result);
+    } catch (e) {
+      console.error('Replay commissioning failed:', e);
+      setCommResult({
+        trace: [],
+        baseline_profile: {},
+        current_profile: {},
+        score: 0,
+        diagnostics: [],
+        commissioning: null,
+        error: e instanceof Error ? e.message : 'Replay commissioning failed.',
+      });
+    }
     setStep(3);
   };
 
@@ -1254,6 +1246,17 @@ function CommissioningTab({
       )}
 
       {/* STEP 3 — Verdict */}
+      {step === 3 && !comm && (
+        <section className="max-w-2xl mx-auto">
+          <div className="glass rounded-[2rem] p-8 border-red-500/20">
+            <p className="text-red-400 text-sm">{commResult?.error ?? 'No commissioning data returned.'}</p>
+          </div>
+          <Button onClick={resetComm} variant="outline" className="w-full h-9 rounded-xl font-bold uppercase tracking-widest text-[10px] border-white/10 mt-4">
+            <RotateCcw size={14} className="mr-2" /> Run Again
+          </Button>
+        </section>
+      )}
+
       {step === 3 && comm && (
         <section className="grid grid-cols-12 gap-10">
           <div className="col-span-12 xl:col-span-4 flex flex-col gap-6">
@@ -1326,45 +1329,6 @@ function CommissioningTab({
               <ResistanceHeatmap segments={computeResistanceSegments(commResult.trace)} />
             )}
 
-            {/* Torque–Position Signature */}
-            {commResult?.trace && commResult.trace.length > 0 && (() => {
-              const torquePosData = traceToTorquePosition(commResult.trace);
-              return (
-                <div className="glass rounded-[2rem] p-6">
-                  <h4 className="text-xs font-bold text-zinc-500 uppercase tracking-widest mb-4">
-                    Torque–Position Signature
-                  </h4>
-                  <div className="h-[300px]">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={torquePosData}>
-                        <CartesianGrid strokeDasharray="4 4" stroke="#ffffff05" />
-                        <XAxis dataKey="position" stroke="#71717a" tick={{ fontSize: 10 }}
-                          label={{ value: 'Stroke Position (%)', position: 'insideBottom', offset: -5, style: { fontSize: 10, fill: '#71717a' } }} />
-                        <YAxis stroke="#71717a" tick={{ fontSize: 10 }}
-                          label={{ value: 'Torque (N·mm)', angle: -90, position: 'insideLeft', style: { fontSize: 10, fill: '#71717a' } }} />
-                        <Tooltip
-                          cursor={{ stroke: 'rgba(255,255,255,0.05)' }}
-                          contentStyle={{ background: '#18181b', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8, fontSize: 11 }}
-                          labelFormatter={(v: number) => `Position: ${v}%`}
-                        />
-                        <Line type="monotone" dataKey="torqueUp" name="Up-stroke ↑" stroke="#00ff9f" strokeWidth={2} dot={false} connectNulls />
-                        <Line type="monotone" dataKey="torqueDown" name="Down-stroke ↓" stroke="#a78bfa" strokeWidth={2} dot={false} connectNulls strokeDasharray="6 3" />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                  <div className="flex items-center justify-center gap-6 mt-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-0.5 bg-[#00ff9f]" />
-                      <span className="text-[10px] text-zinc-500 font-mono">Up-stroke</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="w-4 h-0.5 border-t-2 border-dashed border-[#a78bfa]" />
-                      <span className="text-[10px] text-zinc-500 font-mono">Down-stroke</span>
-                    </div>
-                  </div>
-                </div>
-              );
-            })()}
 
           </div>
         </section>

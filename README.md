@@ -6,11 +6,6 @@ ActuSpec turns raw actuator telemetry into decisions: a health score, an install
 
 The core idea is simple: treat an actuator torque curve like a mechanical fingerprint, compare it to a known-healthy baseline, and make the result actionable for installers and operators.
 
-```bash
-# Fastest path (replay-first demo)
-pip install -r requirements.txt
-streamlit run solution.py
-```
 
 ## Why this matters
 
@@ -102,7 +97,7 @@ flowchart LR
 ### Prerequisites
 
 - Python 3.10+
-- Node.js 18+ (only for premium frontend)
+- Node.js 20.19+ or 22.12+ (only for premium frontend; required by current Vite toolchain)
 - Access to Belimo hackathon bench for live mode
 
 ### Install backend dependencies
@@ -144,7 +139,13 @@ If `measurements` is not updating, the Pi logger / actuator path is down, and re
 Terminal 1:
 
 ```bash
-uvicorn api:app --reload --host 0.0.0.0 --port 8000
+
+cd ~/Belimo_hack
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python -m uvicorn api:app --reload --host 0.0.0.0 --port 8000
+
 ```
 
 Terminal 2:

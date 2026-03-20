@@ -58,7 +58,10 @@ export interface AppConfig {
   tn_commission_max: number;
   tn_default: number;
   default_mode: string;
+  network_name?: string;
+  influx_url?: string;
   seq_free_stroke: number[];
+  seq_step_delay?: number;
   comm_thresholds: {
     range: number;
     torque_cv: number;

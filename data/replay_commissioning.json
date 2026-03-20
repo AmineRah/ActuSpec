@@ -13,7 +13,7 @@
     "feedback_position_%": 1.01,
     "setpoint_position_%": 1.86,
     "motor_torque_Nmm": 0.477,
-    "internal_temperature_deg_C": 25.94,
+    "internal_temperature_deg_C": 25.985,
     "power_W": 0.272,
     "rotation_direction": 1
   },
@@ -22,7 +22,7 @@
     "feedback_position_%": 2.02,
     "setpoint_position_%": 2.46,
     "motor_torque_Nmm": 0.465,
-    "internal_temperature_deg_C": 26.22,
+    "internal_temperature_deg_C": 26.889,
     "power_W": 0.273,
     "rotation_direction": 1
   },
@@ -31,7 +31,7 @@
     "feedback_position_%": 3.03,
     "setpoint_position_%": 5.59,
     "motor_torque_Nmm": 0.458,
-    "internal_temperature_deg_C": 26.03,
+    "internal_temperature_deg_C": 26.275,
     "power_W": 0.287,
     "rotation_direction": 1
   },
@@ -40,7 +40,7 @@
     "feedback_position_%": 4.04,
     "setpoint_position_%": 2.14,
     "motor_torque_Nmm": 0.484,
-    "internal_temperature_deg_C": 26.11,
+    "internal_temperature_deg_C": 26.534,
     "power_W": 0.284,
     "rotation_direction": 1
   },
@@ -49,7 +49,7 @@
     "feedback_position_%": 5.05,
     "setpoint_position_%": 3.7,
     "motor_torque_Nmm": 0.37,
-    "internal_temperature_deg_C": 25.97,
+    "internal_temperature_deg_C": 26.081,
     "power_W": 0.259,
     "rotation_direction": 1
   },
@@ -58,7 +58,7 @@
     "feedback_position_%": 6.06,
     "setpoint_position_%": 4.52,
     "motor_torque_Nmm": 0.504,
-    "internal_temperature_deg_C": 25.98,
+    "internal_temperature_deg_C": 26.114,
     "power_W": 0.302,
     "rotation_direction": 1
   },
@@ -67,7 +67,7 @@
     "feedback_position_%": 7.07,
     "setpoint_position_%": 8.73,
     "motor_torque_Nmm": 0.487,
-    "internal_temperature_deg_C": 26.17,
+    "internal_temperature_deg_C": 26.727,
     "power_W": 0.271,
     "rotation_direction": 1
   },
@@ -76,7 +76,7 @@
     "feedback_position_%": 8.08,
     "setpoint_position_%": 9.88,
     "motor_torque_Nmm": 0.479,
-    "internal_temperature_deg_C": 25.94,
+    "internal_temperature_deg_C": 25.985,
     "power_W": 0.3,
     "rotation_direction": 1
   },
@@ -85,7 +85,7 @@
     "feedback_position_%": 9.09,
     "setpoint_position_%": 9.99,
     "motor_torque_Nmm": 0.573,
-    "internal_temperature_deg_C": 26.04,
+    "internal_temperature_deg_C": 26.307,
     "power_W": 0.338,
     "rotation_direction": 1
   },
@@ -94,7 +94,7 @@
     "feedback_position_%": 10.1,
     "setpoint_position_%": 12.47,
     "motor_torque_Nmm": 0.469,
-    "internal_temperature_deg_C": 26.09,
+    "internal_temperature_deg_C": 26.469,
     "power_W": 0.276,
     "rotation_direction": 1
   },
@@ -103,7 +103,7 @@
     "feedback_position_%": 11.11,
     "setpoint_position_%": 8.76,
     "motor_torque_Nmm": 0.483,
-    "internal_temperature_deg_C": 26.11,
+    "internal_temperature_deg_C": 26.534,
     "power_W": 0.3,
     "rotation_direction": 1
   },
@@ -112,7 +112,7 @@
     "feedback_position_%": 12.12,
     "setpoint_position_%": 15.46,
     "motor_torque_Nmm": 0.583,
-    "internal_temperature_deg_C": 26.09,
+    "internal_temperature_deg_C": 26.469,
     "power_W": 0.321,
     "rotation_direction": 1
   },
@@ -121,7 +121,7 @@
     "feedback_position_%": 13.13,
     "setpoint_position_%": 16.18,
     "motor_torque_Nmm": 0.477,
-    "internal_temperature_deg_C": 26.16,
+    "internal_temperature_deg_C": 26.695,
     "power_W": 0.292,
     "rotation_direction": 1
   },
@@ -130,7 +130,7 @@
     "feedback_position_%": 14.14,
     "setpoint_position_%": 15.61,
     "motor_torque_Nmm": 0.49,
-    "internal_temperature_deg_C": 26.2,
+    "internal_temperature_deg_C": 26.824,
     "power_W": 0.281,
     "rotation_direction": 1
   },
@@ -139,7 +139,7 @@
     "feedback_position_%": 15.15,
     "setpoint_position_%": 18.72,
     "motor_torque_Nmm": 0.511,
-    "internal_temperature_deg_C": 26.21,
+    "internal_temperature_deg_C": 26.856,
     "power_W": 0.282,
     "rotation_direction": 1
   },
@@ -148,7 +148,7 @@
     "feedback_position_%": 16.16,
     "setpoint_position_%": 12.85,
     "motor_torque_Nmm": 0.557,
-    "internal_temperature_deg_C": 26.05,
+    "internal_temperature_deg_C": 26.34,
     "power_W": 0.317,
     "rotation_direction": 1
   },
@@ -157,7 +157,7 @@
     "feedback_position_%": 17.17,
     "setpoint_position_%": 16.12,
     "motor_torque_Nmm": 0.533,
-    "internal_temperature_deg_C": 26.13,
+    "internal_temperature_deg_C": 26.598,
     "power_W": 0.312,
     "rotation_direction": 1
   },
@@ -166,7 +166,7 @@
     "feedback_position_%": 18.18,
     "setpoint_position_%": 16.71,
     "motor_torque_Nmm": 0.479,
-    "internal_temperature_deg_C": 26.28,
+    "internal_temperature_deg_C": 27.082,
     "power_W": 0.287,
     "rotation_direction": 1
   },
@@ -175,7 +175,7 @@
     "feedback_position_%": 19.19,
     "setpoint_position_%": 20.63,
     "motor_torque_Nmm": 0.513,
-    "internal_temperature_deg_C": 26.26,
+    "internal_temperature_deg_C": 27.018,
     "power_W": 0.29,
     "rotation_direction": 1
   },
@@ -184,7 +184,7 @@
     "feedback_position_%": 20.2,
     "setpoint_position_%": 18.1,
     "motor_torque_Nmm": 0.515,
-    "internal_temperature_deg_C": 26.04,
+    "internal_temperature_deg_C": 26.307,
     "power_W": 0.3,
     "rotation_direction": 1
   },
@@ -193,7 +193,7 @@
     "feedback_position_%": 21.21,
     "setpoint_position_%": 22.73,
     "motor_torque_Nmm": 0.539,
-    "internal_temperature_deg_C": 26.23,
+    "internal_temperature_deg_C": 26.921,
     "power_W": 0.318,
     "rotation_direction": 1
   },
@@ -202,7 +202,7 @@
     "feedback_position_%": 22.22,
     "setpoint_position_%": 24.96,
     "motor_torque_Nmm": 0.56,
-    "internal_temperature_deg_C": 26.0,
+    "internal_temperature_deg_C": 26.178,
     "power_W": 0.323,
     "rotation_direction": 1
   },
@@ -211,7 +211,7 @@
     "feedback_position_%": 23.23,
     "setpoint_position_%": 24.62,
     "motor_torque_Nmm": 0.566,
-    "internal_temperature_deg_C": 26.21,
+    "internal_temperature_deg_C": 26.856,
     "power_W": 0.327,
     "rotation_direction": 1
   },
@@ -220,7 +220,7 @@
     "feedback_position_%": 24.24,
     "setpoint_position_%": 24.81,
     "motor_torque_Nmm": 0.481,
-    "internal_temperature_deg_C": 26.41,
+    "internal_temperature_deg_C": 27.502,
     "power_W": 0.285,
     "rotation_direction": 1
   },
@@ -229,7 +229,7 @@
     "feedback_position_%": 25.25,
     "setpoint_position_%": 23.28,
     "motor_torque_Nmm": 0.6,
-    "internal_temperature_deg_C": 26.13,
+    "internal_temperature_deg_C": 26.598,
     "power_W": 0.352,
     "rotation_direction": 1
   },
@@ -238,7 +238,7 @@
     "feedback_position_%": 26.26,
     "setpoint_position_%": 24.57,
     "motor_torque_Nmm": 0.569,
-    "internal_temperature_deg_C": 26.15,
+    "internal_temperature_deg_C": 26.663,
     "power_W": 0.312,
     "rotation_direction": 1
   },
@@ -247,7 +247,7 @@
     "feedback_position_%": 27.27,
     "setpoint_position_%": 29.77,
     "motor_torque_Nmm": 0.62,
-    "internal_temperature_deg_C": 26.32,
+    "internal_temperature_deg_C": 27.212,
     "power_W": 0.35,
     "rotation_direction": 1
   },
@@ -256,7 +256,7 @@
     "feedback_position_%": 28.28,
     "setpoint_position_%": 29.84,
     "motor_torque_Nmm": 0.583,
-    "internal_temperature_deg_C": 26.1,
+    "internal_temperature_deg_C": 26.501,
     "power_W": 0.346,
     "rotation_direction": 1
   },
@@ -265,7 +265,7 @@
     "feedback_position_%": 29.29,
     "setpoint_position_%": 29.21,
     "motor_torque_Nmm": 0.612,
-    "internal_temperature_deg_C": 26.2,
+    "internal_temperature_deg_C": 26.824,
     "power_W": 0.348,
     "rotation_direction": 1
   },
@@ -274,7 +274,7 @@
     "feedback_position_%": 30.3,
     "setpoint_position_%": 29.47,
     "motor_torque_Nmm": 0.591,
-    "internal_temperature_deg_C": 26.33,
+    "internal_temperature_deg_C": 27.244,
     "power_W": 0.332,
     "rotation_direction": 1
   },
@@ -283,7 +283,7 @@
     "feedback_position_%": 31.31,
     "setpoint_position_%": 27.26,
     "motor_torque_Nmm": 0.63,
-    "internal_temperature_deg_C": 26.22,
+    "internal_temperature_deg_C": 26.889,
     "power_W": 0.342,
     "rotation_direction": 1
   },
@@ -292,7 +292,7 @@
     "feedback_position_%": 32.32,
     "setpoint_position_%": 30.18,
     "motor_torque_Nmm": 0.598,
-    "internal_temperature_deg_C": 26.27,
+    "internal_temperature_deg_C": 27.05,
     "power_W": 0.35,
     "rotation_direction": 1
   },
@@ -301,7 +301,7 @@
     "feedback_position_%": 33.33,
     "setpoint_position_%": 37.16,
     "motor_torque_Nmm": 0.576,
-    "internal_temperature_deg_C": 26.37,
+    "internal_temperature_deg_C": 27.373,
     "power_W": 0.311,
     "rotation_direction": 1
   },
@@ -310,7 +310,7 @@
     "feedback_position_%": 34.34,
     "setpoint_position_%": 31.78,
     "motor_torque_Nmm": 0.675,
-    "internal_temperature_deg_C": 26.35,
+    "internal_temperature_deg_C": 27.309,
     "power_W": 0.353,
     "rotation_direction": 1
   },
@@ -319,7 +319,7 @@
     "feedback_position_%": 35.35,
     "setpoint_position_%": 35.73,
     "motor_torque_Nmm": 0.62,
-    "internal_temperature_deg_C": 26.34,
+    "internal_temperature_deg_C": 27.276,
     "power_W": 0.34,
     "rotation_direction": 1
   },
@@ -328,7 +328,7 @@
     "feedback_position_%": 36.36,
     "setpoint_position_%": 38.38,
     "motor_torque_Nmm": 0.608,
-    "internal_temperature_deg_C": 26.29,
+    "internal_temperature_deg_C": 27.115,
     "power_W": 0.356,
     "rotation_direction": 1
   },
@@ -337,7 +337,7 @@
     "feedback_position_%": 37.37,
     "setpoint_position_%": 34.86,
     "motor_torque_Nmm": 0.537,
-    "internal_temperature_deg_C": 26.37,
+    "internal_temperature_deg_C": 27.373,
     "power_W": 0.319,
     "rotation_direction": 1
   },
@@ -346,7 +346,7 @@
     "feedback_position_%": 38.38,
     "setpoint_position_%": 38.75,
     "motor_torque_Nmm": 0.539,
-    "internal_temperature_deg_C": 26.33,
+    "internal_temperature_deg_C": 27.244,
     "power_W": 0.302,
     "rotation_direction": 1
   },
@@ -355,7 +355,7 @@
     "feedback_position_%": 39.39,
     "setpoint_position_%": 41.27,
     "motor_torque_Nmm": 0.601,
-    "internal_temperature_deg_C": 26.4,
+    "internal_temperature_deg_C": 27.47,
     "power_W": 0.335,
     "rotation_direction": 1
   },
@@ -364,7 +364,7 @@
     "feedback_position_%": 40.4,
     "setpoint_position_%": 40.43,
     "motor_torque_Nmm": 0.6,
-    "internal_temperature_deg_C": 26.31,
+    "internal_temperature_deg_C": 27.179,
     "power_W": 0.33,
     "rotation_direction": 1
   },
@@ -373,7 +373,7 @@
     "feedback_position_%": 41.41,
     "setpoint_position_%": 47.15,
     "motor_torque_Nmm": 0.569,
-    "internal_temperature_deg_C": 26.35,
+    "internal_temperature_deg_C": 27.309,
     "power_W": 0.318,
     "rotation_direction": 1
   },
@@ -382,7 +382,7 @@
     "feedback_position_%": 42.42,
     "setpoint_position_%": 39.09,
     "motor_torque_Nmm": 0.6,
-    "internal_temperature_deg_C": 26.28,
+    "internal_temperature_deg_C": 27.082,
     "power_W": 0.35,
     "rotation_direction": 1
   },
@@ -391,7 +391,7 @@
     "feedback_position_%": 43.43,
     "setpoint_position_%": 45.55,
     "motor_torque_Nmm": 0.659,
-    "internal_temperature_deg_C": 26.39,
+    "internal_temperature_deg_C": 27.438,
     "power_W": 0.343,
     "rotation_direction": 1
   },
@@ -400,7 +400,7 @@
     "feedback_position_%": 44.44,
     "setpoint_position_%": 44.1,
     "motor_torque_Nmm": 0.625,
-    "internal_temperature_deg_C": 26.32,
+    "internal_temperature_deg_C": 27.212,
     "power_W": 0.367,
     "rotation_direction": 1
   },
@@ -409,7 +409,7 @@
     "feedback_position_%": 45.45,
     "setpoint_position_%": 47.0,
     "motor_torque_Nmm": 0.55,
-    "internal_temperature_deg_C": 26.3,
+    "internal_temperature_deg_C": 27.147,
     "power_W": 0.33,
     "rotation_direction": 1
   },
@@ -418,7 +418,7 @@
     "feedback_position_%": 46.46,
     "setpoint_position_%": 47.35,
     "motor_torque_Nmm": 0.593,
-    "internal_temperature_deg_C": 26.44,
+    "internal_temperature_deg_C": 27.599,
     "power_W": 0.349,
     "rotation_direction": 1
   },
@@ -427,7 +427,7 @@
     "feedback_position_%": 47.47,
     "setpoint_position_%": 46.01,
     "motor_torque_Nmm": 0.566,
-    "internal_temperature_deg_C": 26.45,
+    "internal_temperature_deg_C": 27.631,
     "power_W": 0.32,
     "rotation_direction": 1
   },
@@ -436,7 +436,7 @@
     "feedback_position_%": 48.48,
     "setpoint_position_%": 48.94,
     "motor_torque_Nmm": 0.583,
-    "internal_temperature_deg_C": 26.51,
+    "internal_temperature_deg_C": 27.825,
     "power_W": 0.33,
     "rotation_direction": 1
   },
@@ -445,7 +445,7 @@
     "feedback_position_%": 49.49,
     "setpoint_position_%": 45.78,
     "motor_torque_Nmm": 0.583,
-    "internal_temperature_deg_C": 26.4,
+    "internal_temperature_deg_C": 27.47,
     "power_W": 0.313,
     "rotation_direction": 1
   },
@@ -454,7 +454,7 @@
     "feedback_position_%": 50.51,
     "setpoint_position_%": 51.71,
     "motor_torque_Nmm": 0.58,
-    "internal_temperature_deg_C": 26.49,
+    "internal_temperature_deg_C": 27.761,
     "power_W": 0.324,
     "rotation_direction": 1
   },
@@ -463,7 +463,7 @@
     "feedback_position_%": 51.52,
     "setpoint_position_%": 52.11,
     "motor_torque_Nmm": 0.549,
-    "internal_temperature_deg_C": 26.52,
+    "internal_temperature_deg_C": 27.857,
     "power_W": 0.325,
     "rotation_direction": 1
   },
@@ -472,7 +472,7 @@
     "feedback_position_%": 52.53,
     "setpoint_position_%": 53.8,
     "motor_torque_Nmm": 0.593,
-    "internal_temperature_deg_C": 26.51,
+    "internal_temperature_deg_C": 27.825,
     "power_W": 0.351,
     "rotation_direction": 1
   },
@@ -481,7 +481,7 @@
     "feedback_position_%": 53.54,
     "setpoint_position_%": 55.65,
     "motor_torque_Nmm": 0.576,
-    "internal_temperature_deg_C": 26.4,
+    "internal_temperature_deg_C": 27.47,
     "power_W": 0.315,
     "rotation_direction": 1
   },
@@ -490,7 +490,7 @@
     "feedback_position_%": 54.55,
     "setpoint_position_%": 55.28,
     "motor_torque_Nmm": 0.479,
-    "internal_temperature_deg_C": 26.5,
+    "internal_temperature_deg_C": 27.793,
     "power_W": 0.288,
     "rotation_direction": 1
   },
@@ -499,7 +499,7 @@
     "feedback_position_%": 55.56,
     "setpoint_position_%": 55.85,
     "motor_torque_Nmm": 0.68,
-    "internal_temperature_deg_C": 26.53,
+    "internal_temperature_deg_C": 27.89,
     "power_W": 0.365,
     "rotation_direction": 1
   },
@@ -508,7 +508,7 @@
     "feedback_position_%": 56.57,
     "setpoint_position_%": 54.8,
     "motor_torque_Nmm": 0.639,
-    "internal_temperature_deg_C": 26.51,
+    "internal_temperature_deg_C": 27.825,
     "power_W": 0.335,
     "rotation_direction": 1
   },
@@ -517,7 +517,7 @@
     "feedback_position_%": 57.58,
     "setpoint_position_%": 56.15,
     "motor_torque_Nmm": 0.58,
-    "internal_temperature_deg_C": 26.31,
+    "internal_temperature_deg_C": 27.179,
     "power_W": 0.338,
     "rotation_direction": 1
   },
@@ -526,7 +526,7 @@
     "feedback_position_%": 58.59,
     "setpoint_position_%": 60.96,
     "motor_torque_Nmm": 0.593,
-    "internal_temperature_deg_C": 26.54,
+    "internal_temperature_deg_C": 27.922,
     "power_W": 0.327,
     "rotation_direction": 1
   },
@@ -535,7 +535,7 @@
     "feedback_position_%": 59.6,
     "setpoint_position_%": 62.47,
     "motor_torque_Nmm": 0.546,
-    "internal_temperature_deg_C": 26.75,
+    "internal_temperature_deg_C": 28.6,
     "power_W": 0.315,
     "rotation_direction": 1
   },
@@ -544,7 +544,7 @@
     "feedback_position_%": 60.61,
     "setpoint_position_%": 60.13,
     "motor_torque_Nmm": 0.659,
-    "internal_temperature_deg_C": 26.51,
+    "internal_temperature_deg_C": 27.825,
     "power_W": 0.354,
     "rotation_direction": 1
   },
@@ -553,7 +553,7 @@
     "feedback_position_%": 61.62,
     "setpoint_position_%": 61.71,
     "motor_torque_Nmm": 0.666,
-    "internal_temperature_deg_C": 26.48,
+    "internal_temperature_deg_C": 27.728,
     "power_W": 0.352,
     "rotation_direction": 1
   },
@@ -562,7 +562,7 @@
     "feedback_position_%": 62.63,
     "setpoint_position_%": 60.82,
     "motor_torque_Nmm": 0.593,
-    "internal_temperature_deg_C": 26.6,
+    "internal_temperature_deg_C": 28.116,
     "power_W": 0.336,
     "rotation_direction": 1
   },
@@ -571,7 +571,7 @@
     "feedback_position_%": 63.64,
     "setpoint_position_%": 65.98,
     "motor_torque_Nmm": 0.625,
-    "internal_temperature_deg_C": 26.6,
+    "internal_temperature_deg_C": 28.116,
     "power_W": 0.345,
     "rotation_direction": 1
   },
@@ -580,7 +580,7 @@
     "feedback_position_%": 64.65,
     "setpoint_position_%": 65.98,
     "motor_torque_Nmm": 0.591,
-    "internal_temperature_deg_C": 26.7,
+    "internal_temperature_deg_C": 28.439,
     "power_W": 0.33,
     "rotation_direction": 1
   },
@@ -589,7 +589,7 @@
     "feedback_position_%": 65.66,
     "setpoint_position_%": 69.54,
     "motor_torque_Nmm": 0.528,
-    "internal_temperature_deg_C": 26.46,
+    "internal_temperature_deg_C": 27.664,
     "power_W": 0.302,
     "rotation_direction": 1
   },
@@ -598,7 +598,7 @@
     "feedback_position_%": 66.67,
     "setpoint_position_%": 64.91,
     "motor_torque_Nmm": 0.56,
-    "internal_temperature_deg_C": 26.67,
+    "internal_temperature_deg_C": 28.342,
     "power_W": 0.328,
     "rotation_direction": 1
   },
@@ -607,7 +607,7 @@
     "feedback_position_%": 67.68,
     "setpoint_position_%": 66.92,
     "motor_torque_Nmm": 0.583,
-    "internal_temperature_deg_C": 26.67,
+    "internal_temperature_deg_C": 28.342,
     "power_W": 0.352,
     "rotation_direction": 1
   },
@@ -616,7 +616,7 @@
     "feedback_position_%": 68.69,
     "setpoint_position_%": 69.15,
     "motor_torque_Nmm": 0.557,
-    "internal_temperature_deg_C": 26.6,
+    "internal_temperature_deg_C": 28.116,
     "power_W": 0.323,
     "rotation_direction": 1
   },
@@ -625,7 +625,7 @@
     "feedback_position_%": 69.7,
     "setpoint_position_%": 70.99,
     "motor_torque_Nmm": 0.56,
-    "internal_temperature_deg_C": 26.66,
+    "internal_temperature_deg_C": 28.31,
     "power_W": 0.336,
     "rotation_direction": 1
   },
@@ -634,7 +634,7 @@
     "feedback_position_%": 70.71,
     "setpoint_position_%": 70.28,
     "motor_torque_Nmm": 0.566,
-    "internal_temperature_deg_C": 26.74,
+    "internal_temperature_deg_C": 28.568,
     "power_W": 0.307,
     "rotation_direction": 1
   },
@@ -643,7 +643,7 @@
     "feedback_position_%": 71.72,
     "setpoint_position_%": 69.97,
     "motor_torque_Nmm": 0.56,
-    "internal_temperature_deg_C": 26.73,
+    "internal_temperature_deg_C": 28.536,
     "power_W": 0.326,
     "rotation_direction": 1
   },
@@ -652,7 +652,7 @@
     "feedback_position_%": 72.73,
     "setpoint_position_%": 74.49,
     "motor_torque_Nmm": 0.566,
-    "internal_temperature_deg_C": 26.54,
+    "internal_temperature_deg_C": 27.922,
     "power_W": 0.311,
     "rotation_direction": 1
   },
@@ -661,7 +661,7 @@
     "feedback_position_%": 73.74,
     "setpoint_position_%": 75.18,
     "motor_torque_Nmm": 0.517,
-    "internal_temperature_deg_C": 26.74,
+    "internal_temperature_deg_C": 28.568,
     "power_W": 0.288,
     "rotation_direction": 1
   },
@@ -670,7 +670,7 @@
     "feedback_position_%": 74.75,
     "setpoint_position_%": 72.91,
     "motor_torque_Nmm": 0.526,
-    "internal_temperature_deg_C": 26.66,
+    "internal_temperature_deg_C": 28.31,
     "power_W": 0.301,
     "rotation_direction": 1
   },
@@ -679,7 +679,7 @@
     "feedback_position_%": 75.76,
     "setpoint_position_%": 78.47,
     "motor_torque_Nmm": 0.501,
-    "internal_temperature_deg_C": 26.69,
+    "internal_temperature_deg_C": 28.406,
     "power_W": 0.316,
     "rotation_direction": 1
   },
@@ -688,7 +688,7 @@
     "feedback_position_%": 76.77,
     "setpoint_position_%": 79.11,
     "motor_torque_Nmm": 0.589,
-    "internal_temperature_deg_C": 26.69,
+    "internal_temperature_deg_C": 28.406,
     "power_W": 0.345,
     "rotation_direction": 1
   },
@@ -697,7 +697,7 @@
     "feedback_position_%": 77.78,
     "setpoint_position_%": 78.05,
     "motor_torque_Nmm": 0.46,
-    "internal_temperature_deg_C": 26.68,
+    "internal_temperature_deg_C": 28.374,
     "power_W": 0.289,
     "rotation_direction": 1
   },
@@ -706,7 +706,7 @@
     "feedback_position_%": 78.79,
     "setpoint_position_%": 78.95,
     "motor_torque_Nmm": 0.589,
-    "internal_temperature_deg_C": 26.82,
+    "internal_temperature_deg_C": 28.826,
     "power_W": 0.314,
     "rotation_direction": 1
   },
@@ -715,7 +715,7 @@
     "feedback_position_%": 79.8,
     "setpoint_position_%": 80.91,
     "motor_torque_Nmm": 0.593,
-    "internal_temperature_deg_C": 26.71,
+    "internal_temperature_deg_C": 28.471,
     "power_W": 0.333,
     "rotation_direction": 1
   },
@@ -724,7 +724,7 @@
     "feedback_position_%": 80.81,
     "setpoint_position_%": 79.08,
     "motor_torque_Nmm": 0.523,
-    "internal_temperature_deg_C": 26.61,
+    "internal_temperature_deg_C": 28.148,
     "power_W": 0.312,
     "rotation_direction": 1
   },
@@ -733,7 +733,7 @@
     "feedback_position_%": 81.82,
     "setpoint_position_%": 81.88,
     "motor_torque_Nmm": 0.426,
-    "internal_temperature_deg_C": 26.69,
+    "internal_temperature_deg_C": 28.406,
     "power_W": 0.275,
     "rotation_direction": 1
   },
@@ -742,7 +742,7 @@
     "feedback_position_%": 82.83,
     "setpoint_position_%": 78.52,
     "motor_torque_Nmm": 0.511,
-    "internal_temperature_deg_C": 26.76,
+    "internal_temperature_deg_C": 28.633,
     "power_W": 0.282,
     "rotation_direction": 1
   },
@@ -751,7 +751,7 @@
     "feedback_position_%": 83.84,
     "setpoint_position_%": 85.59,
     "motor_torque_Nmm": 0.519,
-    "internal_temperature_deg_C": 26.87,
+    "internal_temperature_deg_C": 28.988,
     "power_W": 0.296,
     "rotation_direction": 1
   },
@@ -760,7 +760,7 @@
     "feedback_position_%": 84.85,
     "setpoint_position_%": 81.73,
     "motor_torque_Nmm": 0.477,
-    "internal_temperature_deg_C": 26.82,
+    "internal_temperature_deg_C": 28.826,
     "power_W": 0.291,
     "rotation_direction": 1
   },
@@ -769,7 +769,7 @@
     "feedback_position_%": 85.86,
     "setpoint_position_%": 88.87,
     "motor_torque_Nmm": 0.492,
-    "internal_temperature_deg_C": 26.68,
+    "internal_temperature_deg_C": 28.374,
     "power_W": 0.304,
     "rotation_direction": 1
   },
@@ -778,7 +778,7 @@
     "feedback_position_%": 86.87,
     "setpoint_position_%": 86.21,
     "motor_torque_Nmm": 0.569,
-    "internal_temperature_deg_C": 27.03,
+    "internal_temperature_deg_C": 29.504,
     "power_W": 0.299,
     "rotation_direction": 1
   },
@@ -787,7 +787,7 @@
     "feedback_position_%": 87.88,
     "setpoint_position_%": 87.46,
     "motor_torque_Nmm": 0.531,
-    "internal_temperature_deg_C": 26.81,
+    "internal_temperature_deg_C": 28.794,
     "power_W": 0.31,
     "rotation_direction": 1
   },
@@ -796,7 +796,7 @@
     "feedback_position_%": 88.89,
     "setpoint_position_%": 87.63,
     "motor_torque_Nmm": 0.462,
-    "internal_temperature_deg_C": 26.92,
+    "internal_temperature_deg_C": 29.149,
     "power_W": 0.288,
     "rotation_direction": 1
   },
@@ -805,7 +805,7 @@
     "feedback_position_%": 89.9,
     "setpoint_position_%": 89.32,
     "motor_torque_Nmm": 0.433,
-    "internal_temperature_deg_C": 26.79,
+    "internal_temperature_deg_C": 28.729,
     "power_W": 0.285,
     "rotation_direction": 1
   },
@@ -814,7 +814,7 @@
     "feedback_position_%": 90.91,
     "setpoint_position_%": 93.75,
     "motor_torque_Nmm": 0.479,
-    "internal_temperature_deg_C": 26.87,
+    "internal_temperature_deg_C": 28.988,
     "power_W": 0.301,
     "rotation_direction": 1
   },
@@ -823,7 +823,7 @@
     "feedback_position_%": 91.92,
     "setpoint_position_%": 86.94,
     "motor_torque_Nmm": 0.479,
-    "internal_temperature_deg_C": 26.91,
+    "internal_temperature_deg_C": 29.117,
     "power_W": 0.299,
     "rotation_direction": 1
   },
@@ -832,7 +832,7 @@
     "feedback_position_%": 92.93,
     "setpoint_position_%": 95.48,
     "motor_torque_Nmm": 0.501,
-    "internal_temperature_deg_C": 26.95,
+    "internal_temperature_deg_C": 29.246,
     "power_W": 0.291,
     "rotation_direction": 1
   },
@@ -841,7 +841,7 @@
     "feedback_position_%": 93.94,
     "setpoint_position_%": 94.62,
     "motor_torque_Nmm": 0.456,
-    "internal_temperature_deg_C": 26.95,
+    "internal_temperature_deg_C": 29.246,
     "power_W": 0.26,
     "rotation_direction": 1
   },
@@ -850,7 +850,7 @@
     "feedback_position_%": 94.95,
     "setpoint_position_%": 92.54,
     "motor_torque_Nmm": 0.492,
-    "internal_temperature_deg_C": 26.94,
+    "internal_temperature_deg_C": 29.214,
     "power_W": 0.293,
     "rotation_direction": 1
   },
@@ -859,7 +859,7 @@
     "feedback_position_%": 95.96,
     "setpoint_position_%": 93.81,
     "motor_torque_Nmm": 0.546,
-    "internal_temperature_deg_C": 26.83,
+    "internal_temperature_deg_C": 28.859,
     "power_W": 0.33,
     "rotation_direction": 1
   },
@@ -868,7 +868,7 @@
     "feedback_position_%": 96.97,
     "setpoint_position_%": 100.0,
     "motor_torque_Nmm": 0.497,
-    "internal_temperature_deg_C": 26.81,
+    "internal_temperature_deg_C": 28.794,
     "power_W": 0.316,
     "rotation_direction": 1
   },
@@ -877,7 +877,7 @@
     "feedback_position_%": 97.98,
     "setpoint_position_%": 96.09,
     "motor_torque_Nmm": 0.456,
-    "internal_temperature_deg_C": 26.91,
+    "internal_temperature_deg_C": 29.117,
     "power_W": 0.293,
     "rotation_direction": 1
   },
@@ -886,7 +886,7 @@
     "feedback_position_%": 98.99,
     "setpoint_position_%": 96.68,
     "motor_torque_Nmm": 0.447,
-    "internal_temperature_deg_C": 26.98,
+    "internal_temperature_deg_C": 29.343,
     "power_W": 0.286,
     "rotation_direction": 1
   },
@@ -895,7 +895,7 @@
     "feedback_position_%": 100.0,
     "setpoint_position_%": 100.0,
     "motor_torque_Nmm": 0.435,
-    "internal_temperature_deg_C": 26.87,
+    "internal_temperature_deg_C": 28.988,
     "power_W": 0.281,
     "rotation_direction": 1
   },
@@ -904,7 +904,7 @@
     "feedback_position_%": 100.0,
     "setpoint_position_%": 100.0,
     "motor_torque_Nmm": 0.497,
-    "internal_temperature_deg_C": 27.01,
+    "internal_temperature_deg_C": 29.44,
     "power_W": 0.292,
     "rotation_direction": 2
   },
@@ -913,7 +913,7 @@
     "feedback_position_%": 98.99,
     "setpoint_position_%": 97.11,
     "motor_torque_Nmm": 0.428,
-    "internal_temperature_deg_C": 27.06,
+    "internal_temperature_deg_C": 29.601,
     "power_W": 0.272,
     "rotation_direction": 2
   },
@@ -922,7 +922,7 @@
     "feedback_position_%": 97.98,
     "setpoint_position_%": 98.41,
     "motor_torque_Nmm": 0.458,
-    "internal_temperature_deg_C": 26.83,
+    "internal_temperature_deg_C": 28.859,
     "power_W": 0.306,
     "rotation_direction": 2
   },
@@ -931,7 +931,7 @@
     "feedback_position_%": 96.97,
     "setpoint_position_%": 94.92,
     "motor_torque_Nmm": 0.465,
-    "internal_temperature_deg_C": 26.85,
+    "internal_temperature_deg_C": 28.923,
     "power_W": 0.276,
     "rotation_direction": 2
   },
@@ -940,7 +940,7 @@
     "feedback_position_%": 95.96,
     "setpoint_position_%": 98.16,
     "motor_torque_Nmm": 0.449,
-    "internal_temperature_deg_C": 26.93,
+    "internal_temperature_deg_C": 29.181,
     "power_W": 0.301,
     "rotation_direction": 2
   },
@@ -949,7 +949,7 @@
     "feedback_position_%": 94.95,
     "setpoint_position_%": 97.07,
     "motor_torque_Nmm": 0.418,
-    "internal_temperature_deg_C": 26.98,
+    "internal_temperature_deg_C": 29.343,
     "power_W": 0.266,
     "rotation_direction": 2
   },
@@ -958,7 +958,7 @@
     "feedback_position_%": 93.94,
     "setpoint_position_%": 95.0,
     "motor_torque_Nmm": 0.489,
-    "internal_temperature_deg_C": 26.91,
+    "internal_temperature_deg_C": 29.117,
     "power_W": 0.313,
     "rotation_direction": 2
   },
@@ -967,7 +967,7 @@
     "feedback_position_%": 92.93,
     "setpoint_position_%": 93.65,
     "motor_torque_Nmm": 0.479,
-    "internal_temperature_deg_C": 27.1,
+    "internal_temperature_deg_C": 29.73,
     "power_W": 0.275,
     "rotation_direction": 2
   },
@@ -976,7 +976,7 @@
     "feedback_position_%": 91.92,
     "setpoint_position_%": 95.44,
     "motor_torque_Nmm": 0.506,
-    "internal_temperature_deg_C": 27.02,
+    "internal_temperature_deg_C": 29.472,
     "power_W": 0.31,
     "rotation_direction": 2
   },
@@ -985,7 +985,7 @@
     "feedback_position_%": 90.91,
     "setpoint_position_%": 90.91,
     "motor_torque_Nmm": 0.469,
-    "internal_temperature_deg_C": 26.99,
+    "internal_temperature_deg_C": 29.375,
     "power_W": 0.28,
     "rotation_direction": 2
   },
@@ -994,7 +994,7 @@
     "feedback_position_%": 89.9,
     "setpoint_position_%": 87.54,
     "motor_torque_Nmm": 0.546,
-    "internal_temperature_deg_C": 26.85,
+    "internal_temperature_deg_C": 28.923,
     "power_W": 0.299,
     "rotation_direction": 2
   },
@@ -1003,7 +1003,7 @@
     "feedback_position_%": 88.89,
     "setpoint_position_%": 89.79,
     "motor_torque_Nmm": 0.465,
-    "internal_temperature_deg_C": 26.87,
+    "internal_temperature_deg_C": 28.988,
     "power_W": 0.29,
     "rotation_direction": 2
   },
@@ -1012,7 +1012,7 @@
     "feedback_position_%": 87.88,
     "setpoint_position_%": 92.05,
     "motor_torque_Nmm": 0.573,
-    "internal_temperature_deg_C": 27.04,
+    "internal_temperature_deg_C": 29.537,
     "power_W": 0.341,
     "rotation_direction": 2
   },
@@ -1021,7 +1021,7 @@
     "feedback_position_%": 86.87,
     "setpoint_position_%": 84.84,
     "motor_torque_Nmm": 0.438,
-    "internal_temperature_deg_C": 26.81,
+    "internal_temperature_deg_C": 28.794,
     "power_W": 0.267,
     "rotation_direction": 2
   },
@@ -1030,7 +1030,7 @@
     "feedback_position_%": 85.86,
     "setpoint_position_%": 85.14,
     "motor_torque_Nmm": 0.531,
-    "internal_temperature_deg_C": 27.13,
+    "internal_temperature_deg_C": 29.827,
     "power_W": 0.293,
     "rotation_direction": 2
   },
@@ -1039,7 +1039,7 @@
     "feedback_position_%": 84.85,
     "setpoint_position_%": 85.68,
     "motor_torque_Nmm": 0.537,
-    "internal_temperature_deg_C": 27.02,
+    "internal_temperature_deg_C": 29.472,
     "power_W": 0.313,
     "rotation_direction": 2
   },
@@ -1048,7 +1048,7 @@
     "feedback_position_%": 83.84,
     "setpoint_position_%": 83.73,
     "motor_torque_Nmm": 0.489,
-    "internal_temperature_deg_C": 27.37,
+    "internal_temperature_deg_C": 30.602,
     "power_W": 0.295,
     "rotation_direction": 2
   },
@@ -1057,7 +1057,7 @@
     "feedback_position_%": 82.83,
     "setpoint_position_%": 80.86,
     "motor_torque_Nmm": 0.544,
-    "internal_temperature_deg_C": 27.29,
+    "internal_temperature_deg_C": 30.344,
     "power_W": 0.323,
     "rotation_direction": 2
   },
@@ -1066,7 +1066,7 @@
     "feedback_position_%": 81.82,
     "setpoint_position_%": 84.06,
     "motor_torque_Nmm": 0.581,
-    "internal_temperature_deg_C": 27.05,
+    "internal_temperature_deg_C": 29.569,
     "power_W": 0.343,
     "rotation_direction": 2
   },
@@ -1075,7 +1075,7 @@
     "feedback_position_%": 80.81,
     "setpoint_position_%": 85.45,
     "motor_torque_Nmm": 0.445,
-    "internal_temperature_deg_C": 27.07,
+    "internal_temperature_deg_C": 29.634,
     "power_W": 0.279,
     "rotation_direction": 2
   },
@@ -1084,7 +1084,7 @@
     "feedback_position_%": 79.8,
     "setpoint_position_%": 80.19,
     "motor_torque_Nmm": 0.557,
-    "internal_temperature_deg_C": 27.18,
+    "internal_temperature_deg_C": 29.989,
     "power_W": 0.345,
     "rotation_direction": 2
   },
@@ -1093,7 +1093,7 @@
     "feedback_position_%": 78.79,
     "setpoint_position_%": 76.98,
     "motor_torque_Nmm": 0.44,
-    "internal_temperature_deg_C": 27.26,
+    "internal_temperature_deg_C": 30.247,
     "power_W": 0.281,
     "rotation_direction": 2
   },
@@ -1102,7 +1102,7 @@
     "feedback_position_%": 77.78,
     "setpoint_position_%": 74.68,
     "motor_torque_Nmm": 0.506,
-    "internal_temperature_deg_C": 26.94,
+    "internal_temperature_deg_C": 29.214,
     "power_W": 0.298,
     "rotation_direction": 2
   },
@@ -1111,7 +1111,7 @@
     "feedback_position_%": 76.77,
     "setpoint_position_%": 77.28,
     "motor_torque_Nmm": 0.615,
-    "internal_temperature_deg_C": 26.93,
+    "internal_temperature_deg_C": 29.181,
     "power_W": 0.323,
     "rotation_direction": 2
   },
@@ -1120,7 +1120,7 @@
     "feedback_position_%": 75.76,
     "setpoint_position_%": 77.97,
     "motor_torque_Nmm": 0.528,
-    "internal_temperature_deg_C": 27.06,
+    "internal_temperature_deg_C": 29.601,
     "power_W": 0.308,
     "rotation_direction": 2
   },
@@ -1129,7 +1129,7 @@
     "feedback_position_%": 74.75,
     "setpoint_position_%": 75.7,
     "motor_torque_Nmm": 0.51,
-    "internal_temperature_deg_C": 27.19,
+    "internal_temperature_deg_C": 30.021,
     "power_W": 0.299,
     "rotation_direction": 2
   },
@@ -1138,7 +1138,7 @@
     "feedback_position_%": 73.74,
     "setpoint_position_%": 73.73,
     "motor_torque_Nmm": 0.55,
-    "internal_temperature_deg_C": 27.19,
+    "internal_temperature_deg_C": 30.021,
     "power_W": 0.332,
     "rotation_direction": 2
   },
@@ -1147,7 +1147,7 @@
     "feedback_position_%": 72.73,
     "setpoint_position_%": 71.55,
     "motor_torque_Nmm": 0.646,
-    "internal_temperature_deg_C": 27.26,
+    "internal_temperature_deg_C": 30.247,
     "power_W": 0.36,
     "rotation_direction": 2
   },
@@ -1156,7 +1156,7 @@
     "feedback_position_%": 71.72,
     "setpoint_position_%": 69.53,
     "motor_torque_Nmm": 0.49,
-    "internal_temperature_deg_C": 27.04,
+    "internal_temperature_deg_C": 29.537,
     "power_W": 0.283,
     "rotation_direction": 2
   },
@@ -1165,7 +1165,7 @@
     "feedback_position_%": 70.71,
     "setpoint_position_%": 72.38,
     "motor_torque_Nmm": 0.524,
-    "internal_temperature_deg_C": 26.94,
+    "internal_temperature_deg_C": 29.214,
     "power_W": 0.312,
     "rotation_direction": 2
   },
@@ -1174,7 +1174,7 @@
     "feedback_position_%": 69.7,
     "setpoint_position_%": 71.52,
     "motor_torque_Nmm": 0.632,
-    "internal_temperature_deg_C": 27.26,
+    "internal_temperature_deg_C": 30.247,
     "power_W": 0.358,
     "rotation_direction": 2
   },
@@ -1183,7 +1183,7 @@
     "feedback_position_%": 68.69,
     "setpoint_position_%": 65.6,
     "motor_torque_Nmm": 0.649,
-    "internal_temperature_deg_C": 27.1,
+    "internal_temperature_deg_C": 29.73,
     "power_W": 0.375,
     "rotation_direction": 2
   },
@@ -1192,7 +1192,7 @@
     "feedback_position_%": 67.68,
     "setpoint_position_%": 70.86,
     "motor_torque_Nmm": 0.573,
-    "internal_temperature_deg_C": 26.99,
+    "internal_temperature_deg_C": 29.375,
     "power_W": 0.339,
     "rotation_direction": 2
   },
@@ -1201,7 +1201,7 @@
     "feedback_position_%": 66.67,
     "setpoint_position_%": 67.81,
     "motor_torque_Nmm": 0.528,
-    "internal_temperature_deg_C": 27.22,
+    "internal_temperature_deg_C": 30.118,
     "power_W": 0.321,
     "rotation_direction": 2
   },
@@ -1210,7 +1210,7 @@
     "feedback_position_%": 65.66,
     "setpoint_position_%": 68.46,
     "motor_torque_Nmm": 0.666,
-    "internal_temperature_deg_C": 27.29,
+    "internal_temperature_deg_C": 30.344,
     "power_W": 0.363,
     "rotation_direction": 2
   },
@@ -1219,7 +1219,7 @@
     "feedback_position_%": 64.65,
     "setpoint_position_%": 61.96,
     "motor_torque_Nmm": 0.648,
-    "internal_temperature_deg_C": 27.21,
+    "internal_temperature_deg_C": 30.086,
     "power_W": 0.36,
     "rotation_direction": 2
   },
@@ -1228,7 +1228,7 @@
     "feedback_position_%": 63.64,
     "setpoint_position_%": 60.9,
     "motor_torque_Nmm": 0.614,
-    "internal_temperature_deg_C": 27.18,
+    "internal_temperature_deg_C": 29.989,
     "power_W": 0.358,
     "rotation_direction": 2
   },
@@ -1237,7 +1237,7 @@
     "feedback_position_%": 62.63,
     "setpoint_position_%": 62.33,
     "motor_torque_Nmm": 0.555,
-    "internal_temperature_deg_C": 27.22,
+    "internal_temperature_deg_C": 30.118,
     "power_W": 0.304,
     "rotation_direction": 2
   },
@@ -1246,7 +1246,7 @@
     "feedback_position_%": 61.62,
     "setpoint_position_%": 62.62,
     "motor_torque_Nmm": 0.587,
-    "internal_temperature_deg_C": 27.21,
+    "internal_temperature_deg_C": 30.086,
     "power_W": 0.329,
     "rotation_direction": 2
   },
@@ -1255,7 +1255,7 @@
     "feedback_position_%": 60.61,
     "setpoint_position_%": 64.2,
     "motor_torque_Nmm": 0.583,
-    "internal_temperature_deg_C": 27.12,
+    "internal_temperature_deg_C": 29.795,
     "power_W": 0.322,
     "rotation_direction": 2
   },
@@ -1264,7 +1264,7 @@
     "feedback_position_%": 59.6,
     "setpoint_position_%": 61.01,
     "motor_torque_Nmm": 0.605,
-    "internal_temperature_deg_C": 27.19,
+    "internal_temperature_deg_C": 30.021,
     "power_W": 0.345,
     "rotation_direction": 2
   },
@@ -1273,7 +1273,7 @@
     "feedback_position_%": 58.59,
     "setpoint_position_%": 58.1,
     "motor_torque_Nmm": 0.652,
-    "internal_temperature_deg_C": 27.33,
+    "internal_temperature_deg_C": 30.473,
     "power_W": 0.372,
     "rotation_direction": 2
   },
@@ -1282,7 +1282,7 @@
     "feedback_position_%": 57.58,
     "setpoint_position_%": 55.52,
     "motor_torque_Nmm": 0.63,
-    "internal_temperature_deg_C": 27.32,
+    "internal_temperature_deg_C": 30.441,
     "power_W": 0.342,
     "rotation_direction": 2
   },
@@ -1291,7 +1291,7 @@
     "feedback_position_%": 56.57,
     "setpoint_position_%": 59.03,
     "motor_torque_Nmm": 0.553,
-    "internal_temperature_deg_C": 27.31,
+    "internal_temperature_deg_C": 30.409,
     "power_W": 0.29,
     "rotation_direction": 2
   },
@@ -1300,7 +1300,7 @@
     "feedback_position_%": 55.56,
     "setpoint_position_%": 53.63,
     "motor_torque_Nmm": 0.652,
-    "internal_temperature_deg_C": 27.2,
+    "internal_temperature_deg_C": 30.053,
     "power_W": 0.352,
     "rotation_direction": 2
   },
@@ -1309,7 +1309,7 @@
     "feedback_position_%": 54.55,
     "setpoint_position_%": 57.8,
     "motor_torque_Nmm": 0.61,
-    "internal_temperature_deg_C": 27.29,
+    "internal_temperature_deg_C": 30.344,
     "power_W": 0.353,
     "rotation_direction": 2
   },
@@ -1318,7 +1318,7 @@
     "feedback_position_%": 53.54,
     "setpoint_position_%": 52.97,
     "motor_torque_Nmm": 0.625,
-    "internal_temperature_deg_C": 27.1,
+    "internal_temperature_deg_C": 29.73,
     "power_W": 0.354,
     "rotation_direction": 2
   },
@@ -1327,7 +1327,7 @@
     "feedback_position_%": 52.53,
     "setpoint_position_%": 55.71,
     "motor_torque_Nmm": 0.657,
-    "internal_temperature_deg_C": 27.35,
+    "internal_temperature_deg_C": 30.538,
     "power_W": 0.365,
     "rotation_direction": 2
   },
@@ -1336,7 +1336,7 @@
     "feedback_position_%": 51.52,
     "setpoint_position_%": 52.87,
     "motor_torque_Nmm": 0.555,
-    "internal_temperature_deg_C": 27.48,
+    "internal_temperature_deg_C": 30.958,
     "power_W": 0.317,
     "rotation_direction": 2
   },
@@ -1345,7 +1345,7 @@
     "feedback_position_%": 50.51,
     "setpoint_position_%": 50.23,
     "motor_torque_Nmm": 0.6,
-    "internal_temperature_deg_C": 27.2,
+    "internal_temperature_deg_C": 30.053,
     "power_W": 0.321,
     "rotation_direction": 2
   },
@@ -1354,7 +1354,7 @@
     "feedback_position_%": 49.49,
     "setpoint_position_%": 48.46,
     "motor_torque_Nmm": 0.58,
-    "internal_temperature_deg_C": 27.3,
+    "internal_temperature_deg_C": 30.376,
     "power_W": 0.336,
     "rotation_direction": 2
   },
@@ -1363,7 +1363,7 @@
     "feedback_position_%": 48.48,
     "setpoint_position_%": 47.8,
     "motor_torque_Nmm": 0.537,
-    "internal_temperature_deg_C": 27.4,
+    "internal_temperature_deg_C": 30.699,
     "power_W": 0.303,
     "rotation_direction": 2
   },
@@ -1372,7 +1372,7 @@
     "feedback_position_%": 47.47,
     "setpoint_position_%": 48.33,
     "motor_torque_Nmm": 0.612,
-    "internal_temperature_deg_C": 27.5,
+    "internal_temperature_deg_C": 31.022,
     "power_W": 0.37,
     "rotation_direction": 2
   },
@@ -1381,7 +1381,7 @@
     "feedback_position_%": 46.46,
     "setpoint_position_%": 46.62,
     "motor_torque_Nmm": 0.7,
-    "internal_temperature_deg_C": 27.34,
+    "internal_temperature_deg_C": 30.505,
     "power_W": 0.382,
     "rotation_direction": 2
   },
@@ -1390,7 +1390,7 @@
     "feedback_position_%": 45.45,
     "setpoint_position_%": 44.27,
     "motor_torque_Nmm": 0.523,
-    "internal_temperature_deg_C": 27.32,
+    "internal_temperature_deg_C": 30.441,
     "power_W": 0.302,
     "rotation_direction": 2
   },
@@ -1399,7 +1399,7 @@
     "feedback_position_%": 44.44,
     "setpoint_position_%": 44.11,
     "motor_torque_Nmm": 0.594,
-    "internal_temperature_deg_C": 27.21,
+    "internal_temperature_deg_C": 30.086,
     "power_W": 0.329,
     "rotation_direction": 2
   },
@@ -1408,7 +1408,7 @@
     "feedback_position_%": 43.43,
     "setpoint_position_%": 43.59,
     "motor_torque_Nmm": 0.621,
-    "internal_temperature_deg_C": 27.42,
+    "internal_temperature_deg_C": 30.764,
     "power_W": 0.345,
     "rotation_direction": 2
   },
@@ -1417,7 +1417,7 @@
     "feedback_position_%": 42.42,
     "setpoint_position_%": 38.17,
     "motor_torque_Nmm": 0.6,
-    "internal_temperature_deg_C": 27.62,
+    "internal_temperature_deg_C": 31.41,
     "power_W": 0.335,
     "rotation_direction": 2
   },
@@ -1426,7 +1426,7 @@
     "feedback_position_%": 41.41,
     "setpoint_position_%": 42.33,
     "motor_torque_Nmm": 0.589,
-    "internal_temperature_deg_C": 27.46,
+    "internal_temperature_deg_C": 30.893,
     "power_W": 0.348,
     "rotation_direction": 2
   },
@@ -1435,7 +1435,7 @@
     "feedback_position_%": 40.4,
     "setpoint_position_%": 38.44,
     "motor_torque_Nmm": 0.542,
-    "internal_temperature_deg_C": 27.44,
+    "internal_temperature_deg_C": 30.828,
     "power_W": 0.318,
     "rotation_direction": 2
   },
@@ -1444,7 +1444,7 @@
     "feedback_position_%": 39.39,
     "setpoint_position_%": 37.09,
     "motor_torque_Nmm": 0.6,
-    "internal_temperature_deg_C": 27.48,
+    "internal_temperature_deg_C": 30.958,
     "power_W": 0.329,
     "rotation_direction": 2
   },
@@ -1453,7 +1453,7 @@
     "feedback_position_%": 38.38,
     "setpoint_position_%": 35.01,
     "motor_torque_Nmm": 0.559,
-    "internal_temperature_deg_C": 27.46,
+    "internal_temperature_deg_C": 30.893,
     "power_W": 0.346,
     "rotation_direction": 2
   },
@@ -1462,7 +1462,7 @@
     "feedback_position_%": 37.37,
     "setpoint_position_%": 33.79,
     "motor_torque_Nmm": 0.499,
-    "internal_temperature_deg_C": 27.38,
+    "internal_temperature_deg_C": 30.635,
     "power_W": 0.301,
     "rotation_direction": 2
   },
@@ -1471,7 +1471,7 @@
     "feedback_position_%": 36.36,
     "setpoint_position_%": 33.65,
     "motor_torque_Nmm": 0.634,
-    "internal_temperature_deg_C": 27.56,
+    "internal_temperature_deg_C": 31.216,
     "power_W": 0.36,
     "rotation_direction": 2
   },
@@ -1480,7 +1480,7 @@
     "feedback_position_%": 35.35,
     "setpoint_position_%": 33.94,
     "motor_torque_Nmm": 0.623,
-    "internal_temperature_deg_C": 27.51,
+    "internal_temperature_deg_C": 31.054,
     "power_W": 0.339,
     "rotation_direction": 2
   },
@@ -1489,7 +1489,7 @@
     "feedback_position_%": 34.34,
     "setpoint_position_%": 38.25,
     "motor_torque_Nmm": 0.583,
-    "internal_temperature_deg_C": 27.49,
+    "internal_temperature_deg_C": 30.99,
     "power_W": 0.336,
     "rotation_direction": 2
   },
@@ -1498,7 +1498,7 @@
     "feedback_position_%": 33.33,
     "setpoint_position_%": 32.28,
     "motor_torque_Nmm": 0.589,
-    "internal_temperature_deg_C": 27.4,
+    "internal_temperature_deg_C": 30.699,
     "power_W": 0.337,
     "rotation_direction": 2
   },
@@ -1507,7 +1507,7 @@
     "feedback_position_%": 32.32,
     "setpoint_position_%": 32.68,
     "motor_torque_Nmm": 0.62,
-    "internal_temperature_deg_C": 27.64,
+    "internal_temperature_deg_C": 31.474,
     "power_W": 0.322,
     "rotation_direction": 2
   },
@@ -1516,7 +1516,7 @@
     "feedback_position_%": 31.31,
     "setpoint_position_%": 32.11,
     "motor_torque_Nmm": 0.583,
-    "internal_temperature_deg_C": 27.59,
+    "internal_temperature_deg_C": 31.313,
     "power_W": 0.357,
     "rotation_direction": 2
   },
@@ -1525,7 +1525,7 @@
     "feedback_position_%": 30.3,
     "setpoint_position_%": 30.57,
     "motor_torque_Nmm": 0.608,
-    "internal_temperature_deg_C": 27.47,
+    "internal_temperature_deg_C": 30.925,
     "power_W": 0.357,
     "rotation_direction": 2
   },
@@ -1534,7 +1534,7 @@
     "feedback_position_%": 29.29,
     "setpoint_position_%": 29.14,
     "motor_torque_Nmm": 0.557,
-    "internal_temperature_deg_C": 27.64,
+    "internal_temperature_deg_C": 31.474,
     "power_W": 0.317,
     "rotation_direction": 2
   },
@@ -1543,7 +1543,7 @@
     "feedback_position_%": 28.28,
     "setpoint_position_%": 25.89,
     "motor_torque_Nmm": 0.62,
-    "internal_temperature_deg_C": 27.5,
+    "internal_temperature_deg_C": 31.022,
     "power_W": 0.331,
     "rotation_direction": 2
   },
@@ -1552,7 +1552,7 @@
     "feedback_position_%": 27.27,
     "setpoint_position_%": 30.17,
     "motor_torque_Nmm": 0.576,
-    "internal_temperature_deg_C": 27.48,
+    "internal_temperature_deg_C": 30.958,
     "power_W": 0.333,
     "rotation_direction": 2
   },
@@ -1561,7 +1561,7 @@
     "feedback_position_%": 26.26,
     "setpoint_position_%": 29.88,
     "motor_torque_Nmm": 0.567,
-    "internal_temperature_deg_C": 27.49,
+    "internal_temperature_deg_C": 30.99,
     "power_W": 0.327,
     "rotation_direction": 2
   },
@@ -1570,7 +1570,7 @@
     "feedback_position_%": 25.25,
     "setpoint_position_%": 21.89,
     "motor_torque_Nmm": 0.504,
-    "internal_temperature_deg_C": 27.4,
+    "internal_temperature_deg_C": 30.699,
     "power_W": 0.307,
     "rotation_direction": 2
   },
@@ -1579,7 +1579,7 @@
     "feedback_position_%": 24.24,
     "setpoint_position_%": 22.19,
     "motor_torque_Nmm": 0.566,
-    "internal_temperature_deg_C": 27.63,
+    "internal_temperature_deg_C": 31.442,
     "power_W": 0.327,
     "rotation_direction": 2
   },
@@ -1588,7 +1588,7 @@
     "feedback_position_%": 23.23,
     "setpoint_position_%": 22.67,
     "motor_torque_Nmm": 0.515,
-    "internal_temperature_deg_C": 27.41,
+    "internal_temperature_deg_C": 30.731,
     "power_W": 0.312,
     "rotation_direction": 2
   },
@@ -1597,7 +1597,7 @@
     "feedback_position_%": 22.22,
     "setpoint_position_%": 20.29,
     "motor_torque_Nmm": 0.519,
-    "internal_temperature_deg_C": 27.48,
+    "internal_temperature_deg_C": 30.958,
     "power_W": 0.326,
     "rotation_direction": 2
   },
@@ -1606,7 +1606,7 @@
     "feedback_position_%": 21.21,
     "setpoint_position_%": 22.22,
     "motor_torque_Nmm": 0.51,
-    "internal_temperature_deg_C": 27.4,
+    "internal_temperature_deg_C": 30.699,
     "power_W": 0.311,
     "rotation_direction": 2
   },
@@ -1615,7 +1615,7 @@
     "feedback_position_%": 20.2,
     "setpoint_position_%": 18.75,
     "motor_torque_Nmm": 0.494,
-    "internal_temperature_deg_C": 27.61,
+    "internal_temperature_deg_C": 31.377,
     "power_W": 0.285,
     "rotation_direction": 2
   },
@@ -1624,7 +1624,7 @@
     "feedback_position_%": 19.19,
     "setpoint_position_%": 23.52,
     "motor_torque_Nmm": 0.62,
-    "internal_temperature_deg_C": 27.61,
+    "internal_temperature_deg_C": 31.377,
     "power_W": 0.362,
     "rotation_direction": 2
   },
@@ -1633,7 +1633,7 @@
     "feedback_position_%": 18.18,
     "setpoint_position_%": 20.56,
     "motor_torque_Nmm": 0.583,
-    "internal_temperature_deg_C": 27.6,
+    "internal_temperature_deg_C": 31.345,
     "power_W": 0.352,
     "rotation_direction": 2
   },
@@ -1642,7 +1642,7 @@
     "feedback_position_%": 17.17,
     "setpoint_position_%": 17.6,
     "motor_torque_Nmm": 0.603,
-    "internal_temperature_deg_C": 27.54,
+    "internal_temperature_deg_C": 31.151,
     "power_W": 0.378,
     "rotation_direction": 2
   },
@@ -1651,7 +1651,7 @@
     "feedback_position_%": 16.16,
     "setpoint_position_%": 18.22,
     "motor_torque_Nmm": 0.472,
-    "internal_temperature_deg_C": 27.54,
+    "internal_temperature_deg_C": 31.151,
     "power_W": 0.276,
     "rotation_direction": 2
   },
@@ -1660,7 +1660,7 @@
     "feedback_position_%": 15.15,
     "setpoint_position_%": 17.36,
     "motor_torque_Nmm": 0.521,
-    "internal_temperature_deg_C": 27.71,
+    "internal_temperature_deg_C": 31.7,
     "power_W": 0.311,
     "rotation_direction": 2
   },
@@ -1669,7 +1669,7 @@
     "feedback_position_%": 14.14,
     "setpoint_position_%": 13.01,
     "motor_torque_Nmm": 0.46,
-    "internal_temperature_deg_C": 27.62,
+    "internal_temperature_deg_C": 31.41,
     "power_W": 0.26,
     "rotation_direction": 2
   },
@@ -1678,7 +1678,7 @@
     "feedback_position_%": 13.13,
     "setpoint_position_%": 11.5,
     "motor_torque_Nmm": 0.481,
-    "internal_temperature_deg_C": 27.71,
+    "internal_temperature_deg_C": 31.7,
     "power_W": 0.3,
     "rotation_direction": 2
   },
@@ -1687,7 +1687,7 @@
     "feedback_position_%": 12.12,
     "setpoint_position_%": 12.28,
     "motor_torque_Nmm": 0.469,
-    "internal_temperature_deg_C": 27.6,
+    "internal_temperature_deg_C": 31.345,
     "power_W": 0.281,
     "rotation_direction": 2
   },
@@ -1696,7 +1696,7 @@
     "feedback_position_%": 11.11,
     "setpoint_position_%": 12.83,
     "motor_torque_Nmm": 0.549,
-    "internal_temperature_deg_C": 27.72,
+    "internal_temperature_deg_C": 31.732,
     "power_W": 0.343,
     "rotation_direction": 2
   },
@@ -1705,7 +1705,7 @@
     "feedback_position_%": 10.1,
     "setpoint_position_%": 10.38,
     "motor_torque_Nmm": 0.479,
-    "internal_temperature_deg_C": 27.84,
+    "internal_temperature_deg_C": 32.12,
     "power_W": 0.283,
     "rotation_direction": 2
   },
@@ -1714,7 +1714,7 @@
     "feedback_position_%": 9.09,
     "setpoint_position_%": 5.94,
     "motor_torque_Nmm": 0.533,
-    "internal_temperature_deg_C": 27.78,
+    "internal_temperature_deg_C": 31.926,
     "power_W": 0.292,
     "rotation_direction": 2
   },
@@ -1723,7 +1723,7 @@
     "feedback_position_%": 8.08,
     "setpoint_position_%": 6.48,
     "motor_torque_Nmm": 0.511,
-    "internal_temperature_deg_C": 27.69,
+    "internal_temperature_deg_C": 31.636,
     "power_W": 0.298,
     "rotation_direction": 2
   },
@@ -1732,7 +1732,7 @@
     "feedback_position_%": 7.07,
     "setpoint_position_%": 6.92,
     "motor_torque_Nmm": 0.576,
-    "internal_temperature_deg_C": 27.76,
+    "internal_temperature_deg_C": 31.862,
     "power_W": 0.303,
     "rotation_direction": 2
   },
@@ -1741,7 +1741,7 @@
     "feedback_position_%": 6.06,
     "setpoint_position_%": 5.91,
     "motor_torque_Nmm": 0.418,
-    "internal_temperature_deg_C": 27.72,
+    "internal_temperature_deg_C": 31.732,
     "power_W": 0.279,
     "rotation_direction": 2
   },
@@ -1750,7 +1750,7 @@
     "feedback_position_%": 5.05,
     "setpoint_position_%": 9.0,
     "motor_torque_Nmm": 0.523,
-    "internal_temperature_deg_C": 27.76,
+    "internal_temperature_deg_C": 31.862,
     "power_W": 0.283,
     "rotation_direction": 2
   },
@@ -1759,7 +1759,7 @@
     "feedback_position_%": 4.04,
     "setpoint_position_%": 1.27,
     "motor_torque_Nmm": 0.515,
-    "internal_temperature_deg_C": 27.73,
+    "internal_temperature_deg_C": 31.765,
     "power_W": 0.306,
     "rotation_direction": 2
   },
@@ -1768,7 +1768,7 @@
     "feedback_position_%": 3.03,
     "setpoint_position_%": 4.04,
     "motor_torque_Nmm": 0.422,
-    "internal_temperature_deg_C": 27.76,
+    "internal_temperature_deg_C": 31.862,
     "power_W": 0.246,
     "rotation_direction": 2
   },
@@ -1777,7 +1777,7 @@
     "feedback_position_%": 2.02,
     "setpoint_position_%": 5.0,
     "motor_torque_Nmm": 0.499,
-    "internal_temperature_deg_C": 27.8,
+    "internal_temperature_deg_C": 31.991,
     "power_W": 0.296,
     "rotation_direction": 2
   },
@@ -1786,7 +1786,7 @@
     "feedback_position_%": 1.01,
     "setpoint_position_%": 5.55,
     "motor_torque_Nmm": 0.467,
-    "internal_temperature_deg_C": 27.69,
+    "internal_temperature_deg_C": 31.636,
     "power_W": 0.308,
     "rotation_direction": 2
   },
@@ -1795,7 +1795,7 @@
     "feedback_position_%": 0.0,
     "setpoint_position_%": 0.0,
     "motor_torque_Nmm": 0.438,
-    "internal_temperature_deg_C": 27.7,
+    "internal_temperature_deg_C": 31.668,
     "power_W": 0.282,
     "rotation_direction": 2
   }
